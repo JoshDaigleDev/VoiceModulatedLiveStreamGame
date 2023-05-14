@@ -6,12 +6,20 @@ class Obsticle(Entity):
         super().__init__(x,y)
         self.width = width
         self.height = height
+        self.left = x
+        self.right = x + width
+        self.top = y + height
+        self.bottom = y
 
     def draw(self):
-        #print(self.x, self.y)
         square = pyglet.shapes.Rectangle(self.x, self.y, self.width, self.height, color=(255, 255, 255))
-        square.draw()
+        square.draw()        
 
-    
+    def move(self, dx, dy):
+        super().move(dx, dy)
+        self.left = self.x
+        self.right = self.x + self.width
+        self.top = self.y + self.height
+        self.bottom = self.y
 
 

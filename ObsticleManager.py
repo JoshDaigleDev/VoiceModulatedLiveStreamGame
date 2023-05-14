@@ -1,18 +1,22 @@
-from obsticle import Obsticle
+from perlin_noise import PerlinNoise
+from Obsticle import Obsticle
 import random
 import time
-class obsticle_coordinator:
+
+class ObsticleManager:
     def __init__(self, window):
         self.obsticles = []
         self.window = window
-        self.generate_obsticle()
         self.obsticleSpeed = 100
         self.lastObsticleTime = time.time()
+        self.noise = PerlinNoise()
+        self.nextNoiseSeed = 1
     
     def generate_obsticle(self):
         top = self.window.height/2
         bottom = -self.window.height/2
-        randomSegment = random.uniform(-self.window.height/3, self.window.height/3)
+        randomSegment = self.noise(self.nextNoiseSeed)*self.window.height/3#random.uniform(-self.window.height/3, self.window.height/3)
+        self.nextNoiseSeed += 0.8
         obsticleSpacing = 150
         obsticleWidth = 200
         originX = self.window.width/2
@@ -37,9 +41,9 @@ class obsticle_coordinator:
         timeSinceLastObsticle = time.time() - self.lastObsticleTime
         for obsticle in self.obsticles:
             obsticle.move(-self.obsticleSpeed*dt, 0)
-            if obsticle.x + obsticle.width/2 < -self.window.width/2:
+            if obsticle.x + obsticle.width < -self.window.width/2:
                 self.obsticles.remove(obsticle)
-        print(timeSinceLastObsticle)
+                
         if timeSinceLastObsticle >= 5:
             self.generate_obsticle()
     
