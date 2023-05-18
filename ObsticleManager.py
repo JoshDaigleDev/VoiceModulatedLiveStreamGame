@@ -11,6 +11,21 @@ class ObsticleManager:
         self.lastObsticleTime = time.time()
         self.noise = PerlinNoise()
         self.nextNoiseSeed = 1
+        self.generate_boundaries()
+
+    def generate_boundaries(self):
+        top = self.window.height/2
+        bottom = -self.window.height/2
+        boundarySize = 150
+
+        bottomBoundaryY = bottom - boundarySize
+        topBoundaryY = top
+
+        topBoundary = Obsticle(-self.window.width/2, topBoundaryY, self.window.width, boundarySize, True)
+        bottomBoundary = Obsticle(-self.window.width/2, bottomBoundaryY, self.window.width, boundarySize, True)
+
+        self.obsticles.append(topBoundary)
+        self.obsticles.append(bottomBoundary)
     
     def generate_obsticle(self):
         top = self.window.height/2
@@ -40,14 +55,25 @@ class ObsticleManager:
     def update(self, dt):
         timeSinceLastObsticle = time.time() - self.lastObsticleTime
         for obsticle in self.obsticles:
-            obsticle.move(-self.obsticleSpeed*dt, 0)
-            if obsticle.x + obsticle.width < -self.window.width/2:
-                self.obsticles.remove(obsticle)
-                
+            if not obsticle.boundary:
+                obsticle.move(-self.obsticleSpeed*dt, 0)
+                if obsticle.x + obsticle.width < -self.window.width/2:
+                    self.obsticles.remove(obsticle)
+            else:
+                boundaryMoveSpeed = 5
+                if obsticle.y > 0: # bottom
+                    if obsticle.y > self.window.height/2 - 150:
+                        obsticle.move(0, -boundaryMoveSpeed)
+                else: # bottom
+                    if obsticle.y < -self.window.height/2:
+                        obsticle.move(0, boundaryMoveSpeed)
+
+                    
         if timeSinceLastObsticle >= 5 or len(self.obsticles) == 0:
             self.generate_obsticle()
     
     def reset(self):
         self.obsticles = []
+        self.generate_boundaries()
 
     

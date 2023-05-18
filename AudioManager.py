@@ -1,9 +1,9 @@
 class AudioManager:
 
     def __init__(self):
-        self.highestPitch = 500
-        self.normalPitch = 400
-        self.lowestPitch = 300
+        self.highestPitch = 600
+        self.normalPitch = 350
+        self.lowestPitch = 100
         self.buffer = 50
         self.speed = 75
         
