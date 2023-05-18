@@ -12,10 +12,13 @@ class PlayerManager:
             self.player.move(0, movement)
         elif movement < 0 and self.player.y - self.player.radius > -self.window.height/2:
             self.player.move(0, movement)
+        self.player.update()
 
-            
     def draw(self):
         self.player.draw()
+    
+    def reset(self):
+        self.player = Player(self.ORIGIN_X, self.ORIGIN_Y)
     
 
 

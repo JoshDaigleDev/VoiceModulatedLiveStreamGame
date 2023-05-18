@@ -1,5 +1,5 @@
 import pyglet
-from entity import Entity
+from Entity import Entity
 
 class Obsticle(Entity):
     def __init__(self, x, y, width, height):

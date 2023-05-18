@@ -44,10 +44,10 @@ class ObsticleManager:
             if obsticle.x + obsticle.width < -self.window.width/2:
                 self.obsticles.remove(obsticle)
                 
-        if timeSinceLastObsticle >= 5:
+        if timeSinceLastObsticle >= 5 or len(self.obsticles) == 0:
             self.generate_obsticle()
     
-                
-
+    def reset(self):
+        self.obsticles = []
 
     
