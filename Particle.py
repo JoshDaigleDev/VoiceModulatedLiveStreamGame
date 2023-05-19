@@ -1,20 +1,19 @@
-from Entity import Entity
-class Particle(Entity):
+from Mover import Mover
+class Particle(Mover):
 
     def __init__(self, x, y, lifeSpan, sprite, xVelocity=0, yVelocity=0):
-        super().__init__(x,y)
+        super().__init__(x, y, sprite)
         self.lifeSpan = lifeSpan
-        self.sprite = sprite
         self.xVelocity = xVelocity
         self.yVelocity = yVelocity
     
     def draw(self):
         if not self.isDead():
-            self.sprite.draw()
+            super().draw()
     
-    def update(self):
+    def update(self, force):
         self.move(self.xVelocity, self.yVelocity)
-        self.yVelocity += -5
+        self.xVelocity, self.yVelocity = force(self.xVelocity, self.yVelocity)
         self.sprite.update(self.x, self.y)
         self.lifeSpan += -1
     

@@ -10,7 +10,7 @@ class AudioSource(threading.Thread):
         self.chunk_size = 2048
         self.format = pyaudio.paFloat32
         self.channels = 1
-        self.rate = 44100
+        self.rate = 48000
         self.audio = pyaudio.PyAudio()
         self.stream = self.audio.open(format=self.format, channels=self.channels,
                                       rate=self.rate, input=True,

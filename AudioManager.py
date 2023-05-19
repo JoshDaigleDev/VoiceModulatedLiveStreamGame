@@ -1,10 +1,10 @@
 class AudioManager:
 
     def __init__(self):
-        self.highestPitch = 600
-        self.normalPitch = 350
-        self.lowestPitch = 100
-        self.buffer = 50
+        self.highestPitch = 550
+        self.normalPitch = 290
+        self.lowestPitch = 200
+        self.buffer = 25
         self.speed = 75
         
     def pitchToMovement(self, pitch, decibles):

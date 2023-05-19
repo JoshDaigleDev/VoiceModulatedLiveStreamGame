@@ -1,25 +1,23 @@
 import pyglet
-from Entity import Entity
+from Mover import Mover
 
-class Player(Entity):
-    def __init__(self, x, y):
-        super().__init__(x,y)
+class Player(Mover):
+    def __init__(self, x, y, sprite):
+        super().__init__(x, y, sprite)
         self.radius = 50
         self.dead = False
-        self.playerAnimation = pyglet.image.load_animation('PlayerIcon.gif')
-
-        self.playerSprite = pyglet.sprite.Sprite(img=self.playerAnimation, x=self.x, y=self.y)
-        self.playerSprite.scale = 100 / self.playerSprite.width
-
 
     def draw(self):
-        #circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=(255, 0, 0))
-        #print(circle)
-        #circle.draw()
-        self.playerSprite.draw()
+        circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=(255, 0, 0))
+        circle.draw()
+        super().draw()
 
     def update(self):
-        self.playerSprite.update(self.x, self.y)
+        self.sprite.update(self.x, self.y-50)
         #square = pyglet.shpaes.rectangle(self.x, self.y, self.radius, self.radius, color=(55, 55, 255))
         #self.playerSprite.draw()
 
+    def reset(self, x, y):
+        self.dead = False
+        self.x = x
+        self.y = y

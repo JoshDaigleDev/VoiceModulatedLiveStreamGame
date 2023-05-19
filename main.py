@@ -14,7 +14,7 @@ gameManager = GameManager(window)
 collisionDetector = CollisionEventDispatcher(gameManager.playerManager, gameManager.obsticleManager)
 CollisionEventDispatcher.register_event_type('on_collision')
 
-background = pyglet.image.load("background.jpg")
+background = pyglet.image.load("./assets/background.jpg")
 
 @collisionDetector.event
 def on_collision():

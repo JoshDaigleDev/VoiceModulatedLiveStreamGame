@@ -1,3 +1,4 @@
+import pyglet
 from Player import Player
 
 class PlayerManager:
@@ -5,7 +6,10 @@ class PlayerManager:
         self.window = window
         self.ORIGIN_X = window.width/-4
         self.ORIGIN_Y = 0
-        self.player = Player(self.ORIGIN_X, self.ORIGIN_Y)
+        self.playerAnimation = pyglet.image.load('./assets/TriangleIcon1.png')
+        self.playerSprite = pyglet.sprite.Sprite(img=self.playerAnimation, x=self.ORIGIN_X+50, y=self.ORIGIN_Y-50)
+        self.playerSprite.scale = 100 / self.playerSprite.width
+        self.player = Player(self.ORIGIN_X, self.ORIGIN_Y, self.playerSprite)
 
     def movePlayer(self, movement):
         if movement > 0 and self.player.y + self.player.radius < self.window.height/2:
@@ -18,7 +22,7 @@ class PlayerManager:
         self.player.draw()
     
     def reset(self):
-        self.player = Player(self.ORIGIN_X, self.ORIGIN_Y)
+        self.player.reset(self.ORIGIN_X, self.ORIGIN_Y)
     
 
 

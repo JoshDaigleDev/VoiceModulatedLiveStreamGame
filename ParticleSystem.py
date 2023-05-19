@@ -1,24 +1,23 @@
 from Particle import Particle
 import pyglet
-import random
 class ParticleSystem:
-    def __init__(self, x, y, num, image):
+    def __init__(self, x, y, num, lifeSpan, size, image, veloctity_generation, external_force):
         self.originX = x
         self.originY = y
         self.particles = []
-        self.lifeSpan = 120
+        self.lifeSpan = lifeSpan
         self.particleNum = num
         self.image = image
+        self.size = size
+        self.velocity_generation = veloctity_generation
+        self.external_force = external_force
         self.init()
 
     def init(self):
-        self.sprite = pyglet.sprite.Sprite(self.image, x=self.originX, y=self.originY)
-        self.sprite.scale = 100 / self.sprite.width
         for i in range(0, self.particleNum):
-            xVelocity = random.randint(-50, 50)
-            yVelocity = random.randint(-50, 50)
+            xVelocity, yVelocity = self.velocity_generation()
             sprite = pyglet.sprite.Sprite(self.image, x=self.originX, y=self.originY)
-            sprite.scale = 25 / sprite.width
+            sprite.scale = self.size / sprite.width
             particle = Particle(self.originX, self.originY, self.lifeSpan, sprite, xVelocity, yVelocity)
             self.particles.append(particle)
 
@@ -28,7 +27,7 @@ class ParticleSystem:
     
     def update(self):
         for particle in self.particles:
-            particle.update()
+            particle.update(self.external_force)
             if particle.isDead():
                 self.particles.remove(particle)
     

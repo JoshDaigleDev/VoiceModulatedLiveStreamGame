@@ -1,7 +1,7 @@
 import pyglet
-from Entity import Entity
+from Mover import Mover
 
-class Obsticle(Entity):
+class Obsticle(Mover):
     def __init__(self, x, y, width, height, boundary=False):
         super().__init__(x,y)
         self.width = width
@@ -16,11 +16,12 @@ class Obsticle(Entity):
         square = pyglet.shapes.Rectangle(self.x, self.y, self.width, self.height, color=(0, 0, 0))
         square.draw()        
 
-    def move(self, dx, dy):
-        super().move(dx, dy)
+    def update(self, dx, dy):
+        self.move(dx, dy)
         self.left = self.x
         self.right = self.x + self.width
         self.top = self.y + self.height
         self.bottom = self.y
+
 
 

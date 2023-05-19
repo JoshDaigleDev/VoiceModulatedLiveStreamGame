@@ -10,6 +10,7 @@ class CollisionEventDispatcher(pyglet.event.EventDispatcher):
         playerX = self.playerManager.player.x
         playerY = self.playerManager.player.y
         playerRadius = self.playerManager.player.radius
+        buffer = 10
 
         for obsticle in self.obsticleManager.obsticles:
             nearX = max(obsticle.left, min(playerX, obsticle.right))
@@ -17,7 +18,7 @@ class CollisionEventDispatcher(pyglet.event.EventDispatcher):
 
             distance = math.sqrt((playerX - nearX)**2 + (playerY - nearY)**2)
             
-            if distance <= playerRadius:
+            if distance <= playerRadius-buffer:
                 self.dispatch_event('on_collision')
                 break
 

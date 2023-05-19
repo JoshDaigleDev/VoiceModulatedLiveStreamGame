@@ -7,7 +7,7 @@ class ObsticleManager:
     def __init__(self, window):
         self.obsticles = []
         self.window = window
-        self.obsticleSpeed = 100
+        self.obsticleSpeed = 150
         self.lastObsticleTime = time.time()
         self.noise = PerlinNoise()
         self.nextNoiseSeed = 1
@@ -56,17 +56,17 @@ class ObsticleManager:
         timeSinceLastObsticle = time.time() - self.lastObsticleTime
         for obsticle in self.obsticles:
             if not obsticle.boundary:
-                obsticle.move(-self.obsticleSpeed*dt, 0)
+                obsticle.update(-self.obsticleSpeed*dt, 0)
                 if obsticle.x + obsticle.width < -self.window.width/2:
                     self.obsticles.remove(obsticle)
             else:
                 boundaryMoveSpeed = 5
                 if obsticle.y > 0: # bottom
                     if obsticle.y > self.window.height/2 - 150:
-                        obsticle.move(0, -boundaryMoveSpeed)
+                        obsticle.update(0, -boundaryMoveSpeed)
                 else: # bottom
                     if obsticle.y < -self.window.height/2:
-                        obsticle.move(0, boundaryMoveSpeed)
+                        obsticle.update(0, boundaryMoveSpeed)
 
                     
         if timeSinceLastObsticle >= 5 or len(self.obsticles) == 0:

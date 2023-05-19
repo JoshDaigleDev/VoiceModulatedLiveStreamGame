@@ -1,10 +1,11 @@
-class Entity:
-    def __init__(self, x, y):
+class Mover:
+    def __init__(self, x, y, sprite=None):
         self.x = x
         self.y = y
-
+        self.sprite = sprite
+    
     def draw(self):
-        print("Cant")
+        self.sprite.draw()
 
     def move(self, dx, dy):
         self.x += dx
