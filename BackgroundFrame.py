@@ -7,7 +7,7 @@ class BackgroundFrame(Mover):
         self.x = x
         self.y = y
         self.background = pyglet.sprite.Sprite(img=image, x=self.x, y=self.y)
-        self.background.scale = self.window.height / self.background.height
+        self.background.scale = (self.window.height + 1) / self.background.height
     
 
     def draw(self):

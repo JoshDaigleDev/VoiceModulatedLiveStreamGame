@@ -15,11 +15,11 @@ class ParticleSystemManager:
 
     def draw(self):
         for particleSystem in self.particleSystems:
-            if particleSystem.size != 25:
+            if particleSystem.size == 10 and not self.stop:
                 particleSystem.draw()
 
         for particleSystem in self.particleSystems:
-            if particleSystem.size == 25:
+            if particleSystem.size != 10:
                 particleSystem.draw()
         
     def update(self):
@@ -32,27 +32,35 @@ class ParticleSystemManager:
 
         if self.playerTrailTimer % 9 == 0 and not self.stop:
             self.initPlayerTrailSheet()
-        elif self.playerTrailTimer <= 0:
+        elif self.playerTrailTimer <= 0 and not self.stop:
             self.initPlayerTrailSheet()
             self.initPlayerTrailNote()
             self.playerTrailTimer = self.timerMax
 
     def loadAssets(self):
-        self.playerExplosionImg = pyglet.image.load('./assets/PlayerParticle.png')
-        self.playerTrailImg = pyglet.image.load('./assets/MusicNote.png')
-        self.SheetMusic = pyglet.image.load('./assets/SheetMusic6.png')
+        self.playerExplosionImg = pyglet.image.load('./assets/SingleNote.png')
+        self.playerTrailImg = pyglet.image.load('./assets/SingleNote.png')
+        self.playerTrailImg.anchor_x = self.playerTrailImg.width // 2
+        self.playerTrailImg.anchor_y = self.playerTrailImg.height // 2 
+        self.SheetMusic = pyglet.image.load('./assets/SheetMusic.png')
+        self.SheetMusic.anchor_x = self.SheetMusic.width // 2
+        self.SheetMusic.anchor_y = self.SheetMusic.height // 2 
     
-    def initPlayerExplosion(self):
+    def initPlayerExplosion(self, image):
         self.stop = True
-        playerExplosionSystem = ParticleSystem(self.player.x, self.player.y, 100, 120, 25, self.playerExplosionImg, self.playerExplosionInitialVelocity, self.standardGravity)
+        imageSeq = pyglet.image.ImageGrid(image, 12, 12)
+        playerExplosionSystem = ParticleSystem(self.player.x, self.player.y, 144, 300, 6, imageSeq, self.playerExplosionInitialVelocity, True, True)
         self.particleSystems.append(playerExplosionSystem)
+        for system in self.particleSystems:
+            if system.bounce:
+                system.external_force = self.standardGravity
     
     def initPlayerTrailNote(self):
-        playerTrailNoteSystem = ParticleSystem(self.player.x, self.player.y, 2, 180, 25, self.playerTrailImg, self.playerTrailNoteInitialVelocity, self.noChange)
+        playerTrailNoteSystem = ParticleSystem(self.player.x, self.player.y, 1, 180, 25, self.playerTrailImg, self.playerTrailNoteInitialVelocity, False, True)
         self.particleSystems.append(playerTrailNoteSystem)
 
     def initPlayerTrailSheet(self):
-        playerTrailSheetSystem = ParticleSystem(self.player.x, self.player.y, 1, 210, 10, self.SheetMusic, self.playerTrailSheetInitialVelocity, self.noChange)
+        playerTrailSheetSystem = ParticleSystem(self.player.x, self.player.y, 1, 210, 10, self.SheetMusic, self.playerTrailSheetInitialVelocity, False, False)
         self.particleSystems.append(playerTrailSheetSystem)
 
     def playerExplosionInitialVelocity(self):
@@ -63,7 +71,7 @@ class ParticleSystemManager:
     
     def playerTrailNoteInitialVelocity(self):
         xVelocity = -1 - random.random() / 5
-        yVelocity = random.random()
+        yVelocity = random.random() / 2
         
         return xVelocity, yVelocity
 
@@ -75,13 +83,13 @@ class ParticleSystemManager:
 
     def standardGravity(self, x, y):
         xNew = x
-        yNew = y - 5
+        yNew = y - 1.5
 
         return xNew, yNew
     
     def noChange(self, x, y):
         xNew = x
-        yNew = y #+ random.random() - 0.3
+        yNew = y 
             
         return xNew, yNew
 

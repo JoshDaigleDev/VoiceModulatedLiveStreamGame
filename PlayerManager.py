@@ -6,16 +6,18 @@ class PlayerManager:
         self.window = window
         self.ORIGIN_X = window.width/-4
         self.ORIGIN_Y = 0
-        self.playerAnimation = pyglet.image.load('./assets/TriangleIcon1.png')
-        self.playerSprite = pyglet.sprite.Sprite(img=self.playerAnimation, x=self.ORIGIN_X+50, y=self.ORIGIN_Y-50)
+        self.playerImage = pyglet.image.load('./assets/PlayerSprite.png')
+        self.playerImage.anchor_x = self.playerImage.width // 2 ##this line is new
+        self.playerImage.anchor_y = self.playerImage.height // 2 ## and this line also
+        self.playerSprite = pyglet.sprite.Sprite(img=self.playerImage, x=self.ORIGIN_X, y=self.ORIGIN_Y)
         self.playerSprite.scale = 100 / self.playerSprite.width
         self.player = Player(self.ORIGIN_X, self.ORIGIN_Y, self.playerSprite)
 
-    def movePlayer(self, movement):
+    def movePlayer(self, movement, direction):
         if movement > 0 and self.player.y + self.player.radius < self.window.height/2:
-            self.player.move(0, movement)
+            self.player.move(0, movement, direction)
         elif movement < 0 and self.player.y - self.player.radius > -self.window.height/2:
-            self.player.move(0, movement)
+            self.player.move(0, movement, direction)
         self.player.update()
 
     def draw(self):

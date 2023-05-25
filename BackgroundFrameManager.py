@@ -5,7 +5,7 @@ class BackgroundFrameManager:
 
     def __init__(self, window):
         self.window = window
-        self.backgroundImage = pyglet.image.load("./assets/BG.jpg")
+        self.backgroundImage = pyglet.image.load("./assets/HDMess.png")
         self.backgroundFrames = []
         self.reset()
     
