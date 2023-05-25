@@ -47,7 +47,7 @@ def update(dt):
     if not gameManager.gameOver:
         gameEvents.detectCollision()
         gameEvents.detectScore()
-    gameEvents.doParticlePhysics()
+    gameEvents.doParticlePhysics(dt)
 
 audioSource = AudioSource()
 audioSource.start()

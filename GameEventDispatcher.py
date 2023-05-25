@@ -32,8 +32,8 @@ class GameEventDispatcher(pyglet.event.EventDispatcher):
                     obstacle.passed = True
                     self.dispatch_event('on_score')
 
-    def doParticlePhysics(self):
-        damping_factor = 0.9  # Adjust the damping factor as needed
+    def doParticlePhysics(self, dt):
+        damping_factor = 0.8  # Adjust the damping factor as needed
         airDrag = 0.98
         groundFriction = 0.98
         gravity = 0.98
@@ -54,17 +54,27 @@ class GameEventDispatcher(pyglet.event.EventDispatcher):
 
                             if not obstacle.boundary:
                                 if nextX >= obstacle.left and nextX < obstacle.right:
-                                    particle.xVelocity = -(particle.xVelocity * damping_factor) 
+                                    newVelocity = -(particle.xVelocity * damping_factor) 
+                                    if abs(newVelocity) < 2:
+                                        newVelocity = 0
+                                    particle.xVelocity = newVelocity 
                             if topObstacle:
                                 if nextY + particle.radius >= obstacle.bottom:   
-                                    particle.yVelocity = -(particle.yVelocity * damping_factor) 
+                                    newVelocity = -(particle.yVelocity * damping_factor)  
+                                    if abs(newVelocity) < 4:
+                                        newVelocity = 0
+                                    particle.yVelocity = newVelocity
                             else:          
                                 if nextY - particle.radius <= obstacle.top:  
-                                    particle.yVelocity = -(particle.yVelocity * damping_factor)
+                                    newVelocity = -(particle.yVelocity * damping_factor)  
+                                    if abs(newVelocity) < 4:
+                                        newVelocity = 0
+                                    particle.yVelocity = newVelocity 
                                 
                                 if not topObstacle:
                                     if particle.y + particle.radius >= obstacle.top:
                                         particle.xVelocity *= groundFriction
+                                
 
     def on_score(self):
         pass  

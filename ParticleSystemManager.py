@@ -49,7 +49,7 @@ class ParticleSystemManager:
     def initPlayerExplosion(self, image):
         self.stop = True
         imageSeq = pyglet.image.ImageGrid(image, 12, 12)
-        playerExplosionSystem = ParticleSystem(self.player.x, self.player.y, 144, 300, 6, imageSeq, self.playerExplosionInitialVelocity, True, True)
+        playerExplosionSystem = ParticleSystem(self.player.x, self.player.y, 144, 600, 6, imageSeq, self.playerExplosionInitialVelocity, True, True)
         self.particleSystems.append(playerExplosionSystem)
         for system in self.particleSystems:
             if system.bounce:
