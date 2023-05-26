@@ -50,6 +50,22 @@ class ParticleSystem:
         
         return finished
 
+class LaserSystem:
+    def __init__(self):
+        self.lasers = []
+
+    def add(self, laser):
+        self.lasers.append(laser)
+
+    def draw(self):
+        for laser in self.lasers:
+            if not laser.dead:
+                laser.draw()
+    
+    def update(self):
+        for laser in self.lasers:
+            laser.update()
+            if laser.dead:
+                self.lasers.remove(laser)
+            
         
-
-

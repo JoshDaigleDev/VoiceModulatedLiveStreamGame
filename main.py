@@ -15,10 +15,13 @@ gameEvents = GameEventDispatcher(gameManager)
 GameEventDispatcher.register_event_type('on_collision')
 GameEventDispatcher.register_event_type('on_score')
 #background = pyglet.image.load("./assets/background.jpg")
+moveUp = False
+moveDown = False
 
 @gameEvents.event
 def on_collision():
-    gameManager.endGame()   
+    pass
+    #gameManager.endGame()   
 
 @gameEvents.event
 def on_score():
@@ -33,9 +36,27 @@ def on_draw():
 
 @window.event
 def on_key_press(symbol, modifiers):
+    global moveUp
+    global moveDown
     if symbol == 32:
         gameManager.reset()
-
+    elif symbol == 65362:
+        moveUp = True
+    elif symbol == 65364:
+        moveDown = True
+    elif symbol == 108:
+        gameManager.laserCannonManager.start_laser()
+    else:
+        print(f"symbol: {symbol}")
+@window.event
+def on_key_release(symbol, modifiers):
+    global moveUp
+    global moveDown
+    if symbol == 65362:
+        moveUp = False    
+    elif symbol == 65364:
+        moveDown = False
+        
 @window.event
 def on_close():
     audioSource.stop()
@@ -48,6 +69,11 @@ def update(dt):
         gameEvents.detectCollision()
         gameEvents.detectScore()
     gameEvents.doParticlePhysics(dt)
+
+    if moveUp:
+        gameManager.playerManager.movePlayer(150*dt, -1)
+    elif moveDown:
+        gameManager.playerManager.movePlayer(-150*dt, 1)
 
 audioSource = AudioSource()
 audioSource.start()

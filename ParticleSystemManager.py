@@ -1,6 +1,7 @@
 import pyglet
 import random
 from ParticleSystem import ParticleSystem
+from ParticleSystem import LaserSystem
 
 class ParticleSystemManager:
 
@@ -12,6 +13,7 @@ class ParticleSystemManager:
         self.timerMax = 54
         self.playerTrailTimer = self.timerMax
         self.stop = False
+        self.lasers = LaserSystem()
 
     def draw(self):
         for particleSystem in self.particleSystems:
@@ -22,11 +24,15 @@ class ParticleSystemManager:
             if particleSystem.size != 10:
                 particleSystem.draw()
         
+        self.lasers.draw()
+        
     def update(self):
         for particleSystem in self.particleSystems:
             particleSystem.update()
             if(particleSystem.isFinished()):
                 self.particleSystems.remove(particleSystem)
+
+        self.lasers.update()
 
         self.playerTrailTimer -= 1
 
@@ -68,6 +74,9 @@ class ParticleSystemManager:
         yVelocity = random.randint(-50, 50)
 
         return xVelocity, yVelocity
+    
+    def fire_laser(self, laser):
+        self.lasers.add(laser)
     
     def playerTrailNoteInitialVelocity(self):
         xVelocity = -1 - random.random() / 5

@@ -1,6 +1,5 @@
 import pyglet
 import math
-
 class GameEventDispatcher(pyglet.event.EventDispatcher):
     def __init__(self, gameManager):
         self.obstacleManager = gameManager.obstacleManager

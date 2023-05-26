@@ -1,5 +1,6 @@
 from perlin_noise import PerlinNoise
 from Obstacle import Obstacle
+from LaserProjectile import LaserProjectile
 import time
 
 class ObstacleManager:
@@ -60,7 +61,7 @@ class ObstacleManager:
         timeSinceLastObstacle = time.time() - self.lastObstacleTime
         for obstacle in self.obstacles:
             if not obstacle.boundary:
-                obstacle.update(-self.obstacleSpeed*dt, 0)
+                obstacle.update(-self.obstacleSpeed * dt, 0)
                 if obstacle.x + obstacle.width < -self.window.width/2:
                     self.obstacles.remove(obstacle)
             else:

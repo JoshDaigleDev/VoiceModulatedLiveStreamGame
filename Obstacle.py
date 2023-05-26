@@ -12,6 +12,7 @@ class Obstacle(Mover):
         self.bottom = y
         self.boundary = boundary
         self.passed = False
+        self.rectangle = pyglet.shapes.Rectangle(self.x, self.y, self.width, self.height, color=(0, 0, 0))
 
     def contains(self, x, y, radius):
         x_distance = abs(x - (self.left + self.width / 2))
@@ -22,11 +23,12 @@ class Obstacle(Mover):
         return False
 
     def draw(self):
-        square = pyglet.shapes.Rectangle(self.x, self.y, self.width, self.height, color=(0, 0, 0))
-        square.draw()        
+        self.rectangle.draw()        
 
     def update(self, dx, dy):
         self.move(dx, dy)
+        self.rectangle.x = self.x
+        self.rectangle.y = self.y
         self.left = self.x
         self.right = self.x + self.width
         self.top = self.y + self.height

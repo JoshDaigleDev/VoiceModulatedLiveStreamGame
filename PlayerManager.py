@@ -7,8 +7,8 @@ class PlayerManager:
         self.ORIGIN_X = window.width/-4
         self.ORIGIN_Y = 0
         self.playerImage = pyglet.image.load('./assets/PlayerSprite.png')
-        self.playerImage.anchor_x = self.playerImage.width // 2 ##this line is new
-        self.playerImage.anchor_y = self.playerImage.height // 2 ## and this line also
+        self.playerImage.anchor_x = self.playerImage.width // 2 
+        self.playerImage.anchor_y = self.playerImage.height // 2 
         self.playerSprite = pyglet.sprite.Sprite(img=self.playerImage, x=self.ORIGIN_X, y=self.ORIGIN_Y)
         self.playerSprite.scale = 100 / self.playerSprite.width
         self.player = Player(self.ORIGIN_X, self.ORIGIN_Y, self.playerSprite)
@@ -22,7 +22,7 @@ class PlayerManager:
 
     def draw(self):
         self.player.draw()
-    
+
     def reset(self):
         self.player.reset(self.ORIGIN_X, self.ORIGIN_Y)
     
