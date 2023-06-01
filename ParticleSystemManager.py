@@ -10,8 +10,10 @@ class ParticleSystemManager:
         self.player = player
         self.particleSystems = []
         self.loadAssets()
-        self.timerMax = 54
-        self.playerTrailTimer = self.timerMax
+        self.noteMax = 40
+        self.noteTimer = 0
+        self.sheetTimer = 0
+        self.sheetMax = 1
         self.stop = False
         self.lasers = LaserSystem()
 
@@ -34,21 +36,23 @@ class ParticleSystemManager:
 
         self.lasers.update()
 
-        self.playerTrailTimer -= 1
+        self.sheetTimer += 1
+        self.noteTimer += 1
+        if not self.stop:
+            if self.sheetTimer >= self.sheetMax:
+                self.initPlayerTrailSheet()
+                self.sheetTimer = 0
 
-        if self.playerTrailTimer % 9 == 0 and not self.stop:
-            self.initPlayerTrailSheet()
-        elif self.playerTrailTimer <= 0 and not self.stop:
-            self.initPlayerTrailSheet()
-            self.initPlayerTrailNote()
-            self.playerTrailTimer = self.timerMax
+            if self.noteTimer >= self.noteMax:
+                self.initPlayerTrailNote()
+                self.noteTimer = 0
 
     def loadAssets(self):
         self.playerExplosionImg = pyglet.image.load('./assets/SingleNote.png')
         self.playerTrailImg = pyglet.image.load('./assets/SingleNote.png')
         self.playerTrailImg.anchor_x = self.playerTrailImg.width // 2
         self.playerTrailImg.anchor_y = self.playerTrailImg.height // 2 
-        self.SheetMusic = pyglet.image.load('./assets/SheetMusic.png')
+        self.SheetMusic = pyglet.image.load('./assets/SheetMusicClearThin.png')
         self.SheetMusic.anchor_x = self.SheetMusic.width // 2
         self.SheetMusic.anchor_y = self.SheetMusic.height // 2 
     
@@ -66,7 +70,7 @@ class ParticleSystemManager:
         self.particleSystems.append(playerTrailNoteSystem)
 
     def initPlayerTrailSheet(self):
-        playerTrailSheetSystem = ParticleSystem(self.player.x, self.player.y, 1, 210, 10, self.SheetMusic, self.playerTrailSheetInitialVelocity, False, False)
+        playerTrailSheetSystem = ParticleSystem(self.player.x, self.player.y, 1, 180, 2, self.SheetMusic, self.playerTrailSheetInitialVelocity, False, False)
         self.particleSystems.append(playerTrailSheetSystem)
 
     def playerExplosionInitialVelocity(self):
@@ -103,6 +107,5 @@ class ParticleSystemManager:
         return xNew, yNew
 
     def reset(self):
-        self.playerTrailTimer = self.timerMax
         self.stop = False
         self.particleSystems = []

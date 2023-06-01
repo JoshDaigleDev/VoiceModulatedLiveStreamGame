@@ -8,20 +8,26 @@ from GameEventDispatcher import GameEventDispatcher
 window = pyglet.window.Window(1920, 1080)
 
 projection = Mat4.orthogonal_projection(-window.width/2, window.width/2, -window.height/2, window.height/2, z_near=-255, z_far=255)
-pyglet.gl.glClearColor(1, 0.75, 0.5, 1)
+pyglet.gl.glClearColor(115/255, 191/255, 230/255, 1)
+#pyglet.gl.glClearColor(0.32, 0.91, 0.97, 1)
 
 gameManager = GameManager(window)
 gameEvents = GameEventDispatcher(gameManager)
 GameEventDispatcher.register_event_type('on_collision')
 GameEventDispatcher.register_event_type('on_score')
-#background = pyglet.image.load("./assets/background.jpg")
+backgroundSky = pyglet.image.load("./assets/BGSky.png")
+
+
+#bghSprite.scale = window.width / bghSprite.width
 moveUp = False
 moveDown = False
 
+
+
 @gameEvents.event
 def on_collision():
-    pass
-    #gameManager.endGame()   
+    
+    gameManager.endGame()   
 
 @gameEvents.event
 def on_score():
@@ -31,7 +37,7 @@ def on_score():
 def on_draw():
     window.projection = projection
     window.clear()
-    #background.blit(-window.width/2, -window.height/2, width=window.width, height=window.height)
+    #backgroundSky.blit(-window.width/2, -window.height/2, width=window.width, height=window.height)
     gameManager.draw()
 
 @window.event
@@ -45,9 +51,10 @@ def on_key_press(symbol, modifiers):
     elif symbol == 65364:
         moveDown = True
     elif symbol == 108:
-        gameManager.laserCannonManager.start_laser()
+        gameManager.startLaser()
     else:
         print(f"symbol: {symbol}")
+
 @window.event
 def on_key_release(symbol, modifiers):
     global moveUp
@@ -74,6 +81,9 @@ def update(dt):
         gameManager.playerManager.movePlayer(150*dt, -1)
     elif moveDown:
         gameManager.playerManager.movePlayer(-150*dt, 1)
+    
+    #bghSprite.update(bghSprite.x - 0.4)
+    #bghSprite2.update(bghSprite2.x - 0.2)
 
 audioSource = AudioSource()
 audioSource.start()

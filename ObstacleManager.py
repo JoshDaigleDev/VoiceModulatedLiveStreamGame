@@ -60,20 +60,25 @@ class ObstacleManager:
     def update(self, dt):
         timeSinceLastObstacle = time.time() - self.lastObstacleTime
         for obstacle in self.obstacles:
-            if not obstacle.boundary:
-                obstacle.update(-self.obstacleSpeed * dt, 0)
-                if obstacle.x + obstacle.width < -self.window.width/2:
+            if isinstance(obstacle, LaserProjectile):
+                obstacle.update()
+                if obstacle.dead:
                     self.obstacles.remove(obstacle)
             else:
-                boundaryMoveSpeed = 5
-                if obstacle.y > 0:
-                    if obstacle.y > self.window.height/2 - 150:
-                        obstacle.update(0, -boundaryMoveSpeed)
+                if not obstacle.boundary:
+                    obstacle.update(-self.obstacleSpeed * dt, 0)
+                    if obstacle.x + obstacle.width < -self.window.width/2:
+                        self.obstacles.remove(obstacle)
+                else:
+                    boundaryMoveSpeed = 5
+                    if obstacle.y > 0:
+                        if obstacle.y > self.window.height/2 - 150:
+                            obstacle.update(0, -boundaryMoveSpeed)
+                        else: 
+                            self.settingUp = False
                     else: 
-                        self.settingUp = False
-                else: 
-                    if obstacle.y < -self.window.height/2:
-                        obstacle.update(0, boundaryMoveSpeed)
+                        if obstacle.y < -self.window.height/2:
+                            obstacle.update(0, boundaryMoveSpeed)
 
                     
         if timeSinceLastObstacle >= 2 or len(self.obstacles) == 0:

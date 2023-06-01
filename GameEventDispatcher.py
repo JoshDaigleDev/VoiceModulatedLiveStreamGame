@@ -36,6 +36,10 @@ class GameEventDispatcher(pyglet.event.EventDispatcher):
         airDrag = 0.98
         groundFriction = 0.98
         gravity = 0.98
+        splatter = False
+        if not splatter:
+            dt = 1
+
         for system in self.particleSystemManager.particleSystems:
             if system.externalForce:
                 for particle in system.particles:
@@ -51,21 +55,23 @@ class GameEventDispatcher(pyglet.event.EventDispatcher):
                             nextX = particle.x + particle.xVelocity
                             nextY = particle.y + particle.yVelocity
 
+                            withinX = nextX >= obstacle.left and nextX < obstacle.right
+
                             if not obstacle.boundary:
-                                if nextX >= obstacle.left and nextX < obstacle.right:
-                                    newVelocity = -(particle.xVelocity * damping_factor) 
+                                if withinX:
+                                    newVelocity = -(particle.xVelocity * damping_factor)*dt
                                     if abs(newVelocity) < 2:
                                         newVelocity = 0
                                     particle.xVelocity = newVelocity 
                             if topObstacle:
                                 if nextY + particle.radius >= obstacle.bottom:   
-                                    newVelocity = -(particle.yVelocity * damping_factor)  
+                                    newVelocity = -(particle.yVelocity * damping_factor)*dt
                                     if abs(newVelocity) < 4:
                                         newVelocity = 0
                                     particle.yVelocity = newVelocity
                             else:          
                                 if nextY - particle.radius <= obstacle.top:  
-                                    newVelocity = -(particle.yVelocity * damping_factor)  
+                                    newVelocity = -(particle.yVelocity * damping_factor)*dt
                                     if abs(newVelocity) < 4:
                                         newVelocity = 0
                                     particle.yVelocity = newVelocity 

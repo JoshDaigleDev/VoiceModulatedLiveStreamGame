@@ -4,7 +4,7 @@ from Player import Player
 class PlayerManager:
     def __init__(self, window):
         self.window = window
-        self.ORIGIN_X = window.width/-4
+        self.ORIGIN_X = 0
         self.ORIGIN_Y = 0
         self.playerImage = pyglet.image.load('./assets/PlayerSprite.png')
         self.playerImage.anchor_x = self.playerImage.width // 2 

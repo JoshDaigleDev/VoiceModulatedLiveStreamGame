@@ -10,3 +10,7 @@ class Mover:
     def move(self, dx, dy):
         self.x += dx
         self.y += dy
+    
+    def update(self):
+        if self.sprite:
+            self.sprite.update(self.x, self.y)

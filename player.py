@@ -13,9 +13,6 @@ class Player(Mover):
         #circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=(255, 0, 0, 50))
         #circle.draw()
 
-    def update(self):
-        self.sprite.update(self.x, self.y)
-
     def move(self, x, y, direction):
         super().move(x,y)
         rotation = direction * self.rotationAmount
