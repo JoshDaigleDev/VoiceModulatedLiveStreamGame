@@ -2,16 +2,24 @@ import pyglet
 from Mover import Mover
 
 class Obstacle(Mover):
-    def __init__(self, x, y, width, height, boundary=False):
+    def __init__(self, x, y, width, height, sprite=None, boundary=False):
         super().__init__(x,y)
         self.width = width
         self.height = height
+
+        self.boundary = boundary
+        self.passed = False
+
+        self.alpha = 255
+        
+        self.sprite = sprite
+
         self.left = x
         self.right = x + width
         self.top = y + height
         self.bottom = y
-        self.boundary = boundary
-        self.passed = False
+        self.isTop = self.y > 0
+        #self.rectangle = pyglet.shapes.BorderedRectangle(self.x, self.y, self.width, self.height, border=5, color=(150, 91, 75), border_color=(0,0,0))
         self.rectangle = pyglet.shapes.Rectangle(self.x, self.y, self.width, self.height, color=(0, 0, 0))
 
     def contains(self, x, y, radius):
@@ -23,10 +31,27 @@ class Obstacle(Mover):
         return False
 
     def draw(self):
-        self.rectangle.draw()        
+        """
+             if not self.boundary and self.passed:
+            if self.alpha >= 0:
+                self.alpha -= 2
+            self.rectangle.color = (0,0,0, self.alpha)   
+        """
+        if self.sprite:
+            self.sprite.draw()
+        else:
+            self.rectangle.draw()        
 
     def update(self, dx, dy):
         self.move(dx, dy)
+        if self.passed:
+            if self.isTop:
+                self.move(0, self.height/120)
+            else: 
+                self.move(0, -self.height/120)
+        
+        self.sprite.update(self.x, self.y)
+
         self.rectangle.x = self.x
         self.rectangle.y = self.y
         self.left = self.x

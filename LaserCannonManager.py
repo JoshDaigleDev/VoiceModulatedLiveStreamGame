@@ -92,11 +92,12 @@ class LaserCannonManager:
         self.laserBaseSprite.draw()
 
     def load_assets(self):
-        self.laserBarrelImage = pyglet.image.load("./assets/PixelBarrel.png")
-        self.laserBarrelImage.anchor_x = 0#int(self.scaleUnit*9)
+        self.laserBarrelImage = pyglet.image.load("./assets/PixelBarrel64.png")
+        self.laserBarrelImage.anchor_x = -int(self.scaleUnit*16)
         self.laserBarrelImage.anchor_y = int(self.laserBarrelImage.height/2)
-        self.laserWidth = self.laserBarrelImage.width
-        self.laserBaseImage = pyglet.image.load("./assets/PixelBase.png")
+        self.laserWidth = self.laserBarrelImage.width*0.75
+
+        self.laserBaseImage = pyglet.image.load("./assets/PixelBase64.png")
         self.laserBaseImage.anchor_x = int(self.scaleUnit*8)
         self.laserBaseImage.anchor_y = int(self.laserBaseImage.height/2)
         
@@ -124,7 +125,7 @@ class LaserCannonManager:
         #self.laserPlatformSprite.scale = self.laserBaseWidth / self.laserPlatformSprite.width
 
         self.laserCharge = pyglet.shapes.Rectangle(x=self.anchorX, y=self.anchorY, width=self.laserWidth, height=self.laserWidth/8, color=(255,0,0))
-        self.laserCharge.anchor_x = -self.scaleUnit*2
+        self.laserCharge.anchor_x = -int(self.scaleUnit*16)
         self.laserCharge.anchor_y = self.laserCharge.height/2
 
 

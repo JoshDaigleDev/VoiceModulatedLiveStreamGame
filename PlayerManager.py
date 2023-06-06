@@ -4,13 +4,12 @@ from Player import Player
 class PlayerManager:
     def __init__(self, window):
         self.window = window
-        self.ORIGIN_X = 0
+        self.ORIGIN_X = self.window.width/8
         self.ORIGIN_Y = 0
-        self.playerImage = pyglet.image.load('./assets/PlayerSprite.png')
+        self.playerImage = pyglet.image.load('./assets/PlayerIconVibe.png')
         self.playerImage.anchor_x = self.playerImage.width // 2 
         self.playerImage.anchor_y = self.playerImage.height // 2 
         self.playerSprite = pyglet.sprite.Sprite(img=self.playerImage, x=self.ORIGIN_X, y=self.ORIGIN_Y)
-        self.playerSprite.scale = 100 / self.playerSprite.width
         self.player = Player(self.ORIGIN_X, self.ORIGIN_Y, self.playerSprite)
 
     def movePlayer(self, movement, direction):

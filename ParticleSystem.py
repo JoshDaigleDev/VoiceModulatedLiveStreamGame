@@ -1,7 +1,7 @@
 from Particle import Particle
 import pyglet
 class ParticleSystem:
-    def __init__(self, x, y, num, lifeSpan, size, image, veloctity_generation, externalForce, bounce):
+    def __init__(self, x, y, num, lifeSpan, size, image, veloctity_generation, externalForce, bounce, angle=None):
         self.originX = x
         self.originY = y
         self.particles = []
@@ -15,7 +15,9 @@ class ParticleSystem:
         self.velocity_generation = veloctity_generation
         self.externalForce = externalForce
         self.bounce = bounce
+        self.angle = angle
         self.init()
+
 
     def init(self):
         for i in range(0, self.particleNum):
@@ -25,11 +27,14 @@ class ParticleSystem:
                 imageFragment.anchor_x = imageFragment.width // 2 
                 imageFragment.anchor_y = imageFragment.height // 2 
                 sprite = pyglet.sprite.Sprite(img=imageFragment, x=self.originX, y=self.originY)
-                sprite.scale = (2 * self.size ) / sprite.width
+                #sprite.scale = (2 * self.size ) / sprite.width
             else:
                 sprite = pyglet.sprite.Sprite(img=self.image, x=self.originX, y=self.originY)
-                sprite.scale = self.size / sprite.width
-            particle = Particle(self.originX, self.originY, self.lifeSpan, sprite, self.size, self.bounce, xVelocity, yVelocity)
+
+                #sprite.scale = self.size / sprite.width
+            if self.angle:
+                sprite.rotation = self.angle
+            particle = Particle(self.originX, self.originY, self.lifeSpan, sprite, self.size, self.bounce, xVelocity, yVelocity, self.angle)
             self.particles.append(particle)
 
     def draw(self):

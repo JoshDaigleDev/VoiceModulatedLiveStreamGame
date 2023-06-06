@@ -27,10 +27,10 @@ class GameManager:
         self.particleSystemManager.draw()
         self.obstacleManager.draw()
         self.laserCannonManager.draw()
+        self.textManager.draw()
         if not self.gameOver:
             self.playerManager.draw()
-        if not self.obstacleManager.settingUp:
-            self.textManager.draw()
+            pass
 
     def update(self, dt, pitch, decibles):
         self.landscapeManager.update()
@@ -64,4 +64,4 @@ class GameManager:
         self.particleSystemManager.reset()
         
     def increaseScore(self):
-        self.gameScore += 1
+        self.gameScore += 0.5

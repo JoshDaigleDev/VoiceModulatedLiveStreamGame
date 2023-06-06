@@ -4,6 +4,8 @@ from pyglet.math import Mat4
 from AudioSource import AudioSource
 from GameManager import GameManager
 from GameEventDispatcher import GameEventDispatcher
+from LiveSource import LiveSource
+from LiveEventQueue import LiveEventQueue
 
 window = pyglet.window.Window(1920, 1080)
 
@@ -24,9 +26,10 @@ moveDown = False
 
 
 
+
 @gameEvents.event
 def on_collision():
-    
+
     gameManager.endGame()   
 
 @gameEvents.event
@@ -67,26 +70,38 @@ def on_key_release(symbol, modifiers):
 @window.event
 def on_close():
     audioSource.stop()
+    #liveSource.stop()
     pyglet.clock.unschedule(update)
     pyglet.app.exit()
 
 def update(dt):
+    
+    if moveUp:
+        gameManager.playerManager.movePlayer(150*dt, -1)
+    elif moveDown:
+        gameManager.playerManager.movePlayer(-150*dt, 1)
+
+        
     gameManager.update(dt, audioSource.pitch, audioSource.db_level)
     if not gameManager.gameOver:
         gameEvents.detectCollision()
         gameEvents.detectScore()
     gameEvents.doParticlePhysics(dt)
 
-    if moveUp:
-        gameManager.playerManager.movePlayer(150*dt, -1)
-    elif moveDown:
-        gameManager.playerManager.movePlayer(-150*dt, 1)
     
+    #if not liveEventQueue.is_empty():
+    #    event = liveEventQueue.pop()
+    #    print(f"EVENT: {event.diamonds}")
+        
     #bghSprite.update(bghSprite.x - 0.4)
     #bghSprite2.update(bghSprite2.x - 0.2)
 
 audioSource = AudioSource()
 audioSource.start()
+
+#liveEventQueue = LiveEventQueue()
+#liveSource = LiveSource("@ad.nah", liveEventQueue)
+#liveSource.start()
 
 pyglet.clock.schedule_interval(update, 1/60.0)
 pyglet.app.run()

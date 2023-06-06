@@ -10,7 +10,7 @@ class AudioManager:
     def pitchToMovement(self, pitch, decibles):
 
         movement = -self.speed/2
-        direction = 0
+        direction = 1
 
         if decibles < -35:
             return movement, direction
@@ -29,12 +29,12 @@ class AudioManager:
             if self.normalPitch - value < value - self.lowestPitch:
                 movement = -self.speed
             else:
-                movement = -2 * self.speed
+                movement = - self.speed
             direction = 1
         elif value > self.normalPitch + self.buffer:
             if self.highestPitch - value < value - self.normalPitch:
-                movement = self.speed
+                movement = 3*self.speed
             else:
-                movement = 2 * self.speed
+                movement = 2*self.speed
             direction = -1
         return movement, direction 

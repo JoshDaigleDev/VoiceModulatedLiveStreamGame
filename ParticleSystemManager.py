@@ -10,11 +10,12 @@ class ParticleSystemManager:
         self.player = player
         self.particleSystems = []
         self.loadAssets()
-        self.noteMax = 40
+        self.noteMax = 60
         self.noteTimer = 0
         self.sheetTimer = 0
-        self.sheetMax = 1
+        self.sheetMax = 2
         self.stop = False
+        self.currentRotation = 0 
         self.lasers = LaserSystem()
 
     def draw(self):
@@ -48,12 +49,10 @@ class ParticleSystemManager:
                 self.noteTimer = 0
 
     def loadAssets(self):
-        self.playerExplosionImg = pyglet.image.load('./assets/SingleNote.png')
-        self.playerTrailImg = pyglet.image.load('./assets/SingleNote.png')
+        self.playerTrailImg = pyglet.image.load('./assets/MusicNote.png')
         self.playerTrailImg.anchor_x = self.playerTrailImg.width // 2
         self.playerTrailImg.anchor_y = self.playerTrailImg.height // 2 
         self.SheetMusic = pyglet.image.load('./assets/SheetMusicClearThin.png')
-        self.SheetMusic.anchor_x = self.SheetMusic.width // 2
         self.SheetMusic.anchor_y = self.SheetMusic.height // 2 
     
     def initPlayerExplosion(self, image):
@@ -70,7 +69,12 @@ class ParticleSystemManager:
         self.particleSystems.append(playerTrailNoteSystem)
 
     def initPlayerTrailSheet(self):
-        playerTrailSheetSystem = ParticleSystem(self.player.x, self.player.y, 1, 180, 2, self.SheetMusic, self.playerTrailSheetInitialVelocity, False, False)
+        if self.currentRotation < self.player.currentRotation:
+            self.currentRotation += 2
+        elif self.currentRotation > self.player.currentRotation:
+            self.currentRotation -= 2
+        playerTrailSheetSystem = ParticleSystem(self.player.x, self.player.y, 1, 180, 10, self.SheetMusic, self.playerTrailSheetInitialVelocity, False, False, angle=self.currentRotation)
+        #print(self.player.currentRotation)
         self.particleSystems.append(playerTrailSheetSystem)
 
     def playerExplosionInitialVelocity(self):
