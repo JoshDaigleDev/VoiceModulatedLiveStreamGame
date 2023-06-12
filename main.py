@@ -11,7 +11,6 @@ window = pyglet.window.Window(1920, 1080)
 
 projection = Mat4.orthogonal_projection(-window.width/2, window.width/2, -window.height/2, window.height/2, z_near=-255, z_far=255)
 pyglet.gl.glClearColor(115/255, 191/255, 230/255, 1)
-#pyglet.gl.glClearColor(0.32, 0.91, 0.97, 1)
 
 gameManager = GameManager(window)
 gameEvents = GameEventDispatcher(gameManager)
@@ -24,12 +23,12 @@ backgroundSky = pyglet.image.load("./assets/BGSky.png")
 moveUp = False
 moveDown = False
 
+audioSource = AudioSource()
 
 
 
 @gameEvents.event
 def on_collision():
-
     gameManager.endGame()   
 
 @gameEvents.event
@@ -40,21 +39,29 @@ def on_score():
 def on_draw():
     window.projection = projection
     window.clear()
-    #backgroundSky.blit(-window.width/2, -window.height/2, width=window.width, height=window.height)
     gameManager.draw()
 
 @window.event
 def on_key_press(symbol, modifiers):
     global moveUp
     global moveDown
+
+    #space 
     if symbol == 32:
         gameManager.reset()
+    
+    #up
     elif symbol == 65362:
         moveUp = True
+    
+    #down
     elif symbol == 65364:
         moveDown = True
+    
+    #l
     elif symbol == 108:
         gameManager.startLaser()
+    #\?
     else:
         print(f"symbol: {symbol}")
 
@@ -62,8 +69,11 @@ def on_key_press(symbol, modifiers):
 def on_key_release(symbol, modifiers):
     global moveUp
     global moveDown
+
+    #up
     if symbol == 65362:
         moveUp = False    
+    #down
     elif symbol == 65364:
         moveDown = False
         
@@ -75,18 +85,25 @@ def on_close():
     pyglet.app.exit()
 
 def update(dt):
-    
-    if moveUp:
-        gameManager.playerManager.movePlayer(150*dt, -1)
-    elif moveDown:
-        gameManager.playerManager.movePlayer(-150*dt, 1)
 
+    # MOVEMENT HANDLING: 
+    global moveUp
+    global moveDown
+    if moveUp or moveDown:
+        if moveUp:
+            gameManager.playerManager.movePlayer(150*dt, -1)
+        elif moveDown:
+            gameManager.playerManager.movePlayer(-150*dt, 1)
+    else:
+        gameManager.playerManager.movePlayer(audioSource.movement*dt, audioSource.direction)
         
-    gameManager.update(dt, audioSource.pitch, audioSource.db_level)
+        
+    gameManager.update()
+    gameEvents.doParticlePhysics(dt)
+
     if not gameManager.gameOver:
         gameEvents.detectCollision()
         gameEvents.detectScore()
-    gameEvents.doParticlePhysics(dt)
 
     
     #if not liveEventQueue.is_empty():
@@ -96,7 +113,6 @@ def update(dt):
     #bghSprite.update(bghSprite.x - 0.4)
     #bghSprite2.update(bghSprite2.x - 0.2)
 
-audioSource = AudioSource()
 audioSource.start()
 
 #liveEventQueue = LiveEventQueue()

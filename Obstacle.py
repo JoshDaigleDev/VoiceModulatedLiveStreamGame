@@ -19,7 +19,7 @@ class Obstacle(Mover):
         self.top = y + height
         self.bottom = y
         self.isTop = self.y > 0
-        #self.rectangle = pyglet.shapes.BorderedRectangle(self.x, self.y, self.width, self.height, border=5, color=(150, 91, 75), border_color=(0,0,0))
+
         self.rectangle = pyglet.shapes.Rectangle(self.x, self.y, self.width, self.height, color=(0, 0, 0))
 
     def contains(self, x, y, radius):

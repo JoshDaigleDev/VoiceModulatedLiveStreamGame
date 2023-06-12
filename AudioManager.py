@@ -11,9 +11,10 @@ class AudioManager:
 
         movement = -self.speed/2
         direction = 1
+        sound = False
 
         if decibles < -35:
-            return movement, direction
+            return movement, direction, sound
         
         value = min(pitch, self.highestPitch)
         value = max(value, self.lowestPitch)
@@ -25,16 +26,20 @@ class AudioManager:
         if value > self.normalPitch - self.buffer and value < self.normalPitch + self.buffer:
             movement = 0
             direction = 0
+            sound = True
         elif value < self.normalPitch - self.buffer: #low pitch
             if self.normalPitch - value < value - self.lowestPitch:
                 movement = -self.speed
             else:
                 movement = - self.speed
             direction = 1
+            sound = True
         elif value > self.normalPitch + self.buffer:
             if self.highestPitch - value < value - self.normalPitch:
                 movement = 3*self.speed
             else:
                 movement = 2*self.speed
             direction = -1
-        return movement, direction 
+            sound = True
+
+        return movement, direction, sound

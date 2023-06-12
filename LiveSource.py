@@ -1,6 +1,5 @@
 import threading
 from TikTokLive import TikTokLiveClient
-import time
 from TikTokLive.types.events import *
 from TikTokLive.types.errors import *
 from LiveEvent import *

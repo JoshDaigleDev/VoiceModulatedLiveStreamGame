@@ -24,7 +24,7 @@ class Player(Mover):
         elif self.sprite.rotation > self.currentRotation:
             self.rotationIncrement -= 0.5
         self.sprite.rotation = self.rotationIncrement
-        #print(self.rotationIncrement)
+
 
     def reset(self, x, y):
         self.dead = False
