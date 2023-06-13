@@ -2,44 +2,59 @@ import pyglet
 from pyglet.gl import *
 from pyglet.math import Mat4
 from AudioSource import AudioSource
-from GameManager import GameManager
-from GameEventDispatcher import GameEventDispatcher
 from LiveSource import LiveSource
-from LiveEventQueue import LiveEventQueue
+from Game import Game
+from GameEventDispatcher import GameEventDispatcher
 
+#INITIALIZATION
 window = pyglet.window.Window(1920, 1080)
-
 projection = Mat4.orthogonal_projection(-window.width/2, window.width/2, -window.height/2, window.height/2, z_near=-255, z_far=255)
 pyglet.gl.glClearColor(115/255, 191/255, 230/255, 1)
 
-gameManager = GameManager(window)
-gameEvents = GameEventDispatcher(gameManager)
+game = Game(window)
+gameEvents = GameEventDispatcher(game)
+
 GameEventDispatcher.register_event_type('on_collision')
 GameEventDispatcher.register_event_type('on_score')
 backgroundSky = pyglet.image.load("./assets/BGSky.png")
 
-
-#bghSprite.scale = window.width / bghSprite.width
 moveUp = False
 moveDown = False
 
+USERNAME = "@ad.nah"
 audioSource = AudioSource()
+liveSource = LiveSource(USERNAME)
 
+#EVENT HANDLERS
 
+#LIVE EVENTS
+@liveSource.event()
+def on_tiktok_like(data):
+    game.liveManager.handleLike(data)
 
+@liveSource.event()
+def on_tiktok_follow(data):
+    game.liveManager.handleFollow(data)
+
+@liveSource.event()
+def on_tiktok_gift(data):
+    game.liveManager.handleGift(data)
+
+#GAME EVENTS
 @gameEvents.event
 def on_collision():
-    gameManager.endGame()   
+    game.endGame()   
 
 @gameEvents.event
 def on_score():
-    gameManager.increaseScore()     
+    game.increaseScore()     
 
+#WINDOW EVENTS
 @window.event
 def on_draw():
     window.projection = projection
     window.clear()
-    gameManager.draw()
+    game.draw()
 
 @window.event
 def on_key_press(symbol, modifiers):
@@ -48,7 +63,7 @@ def on_key_press(symbol, modifiers):
 
     #space 
     if symbol == 32:
-        gameManager.reset()
+        game.reset()
     
     #up
     elif symbol == 65362:
@@ -60,7 +75,7 @@ def on_key_press(symbol, modifiers):
     
     #l
     elif symbol == 108:
-        gameManager.startLaser()
+        game.startLaser()
     #\?
     else:
         print(f"symbol: {symbol}")
@@ -80,45 +95,36 @@ def on_key_release(symbol, modifiers):
 @window.event
 def on_close():
     audioSource.stop()
-    #liveSource.stop()
     pyglet.clock.unschedule(update)
     pyglet.app.exit()
 
+
+#MAIN UPDATE LOOP 
 def update(dt):
+    #GAME UPDATES 
+    game.update(dt)
+    if not game.gameOver:
+        gameEvents.detectCollision()
+        gameEvents.detectScore()
 
     # MOVEMENT HANDLING: 
     global moveUp
     global moveDown
     if moveUp or moveDown:
         if moveUp:
-            gameManager.playerManager.movePlayer(150*dt, -1)
+            game.playerManager.movePlayer(150*dt, -1)
         elif moveDown:
-            gameManager.playerManager.movePlayer(-150*dt, 1)
+            game.playerManager.movePlayer(-150*dt, 1)
     else:
-        gameManager.playerManager.movePlayer(audioSource.movement*dt, audioSource.direction)
-        
-        
-    gameManager.update(dt)
-    gameEvents.doParticlePhysics(dt)
+        game.playerManager.movePlayer(audioSource.movement*dt, audioSource.direction)
 
-    if not gameManager.gameOver:
-        gameEvents.detectCollision()
-        gameEvents.detectScore()
 
-    
-    #if not liveEventQueue.is_empty():
-    #    event = liveEventQueue.pop()
-    #    print(f"EVENT: {event.diamonds}")
-        
-    #bghSprite.update(bghSprite.x - 0.4)
-    #bghSprite2.update(bghSprite2.x - 0.2)
 
-audioSource.start()
+def main():
+    audioSource.start()
+    liveSource.start()
+    pyglet.clock.schedule_interval(update, 1/60.0)
+    pyglet.app.run()
 
-#liveEventQueue = LiveEventQueue()
-#liveSource = LiveSource("@ad.nah", liveEventQueue)
-#liveSource.start()
-
-pyglet.clock.schedule_interval(update, 1/60.0)
-pyglet.app.run()
+main()
 

@@ -5,9 +5,10 @@ from ParticleSystem import LaserSystem
 
 class ParticleSystemManager:
 
-    def __init__(self, window, player):
+    def __init__(self, window, player, obstacleManager):
         self.window = window
         self.player = player
+        self.obstacleManager = obstacleManager
         self.particleSystems = []
         self.loadAssets()
         self.noteMax = 60
@@ -29,7 +30,7 @@ class ParticleSystemManager:
         
         self.lasers.draw()
         
-    def update(self):
+    def update(self, dt):
         for particleSystem in self.particleSystems:
             particleSystem.update()
             if(particleSystem.isFinished()):
@@ -47,6 +48,8 @@ class ParticleSystemManager:
             if self.noteTimer >= self.noteMax:
                 self.initPlayerTrailNote()
                 self.noteTimer = 0
+        
+        self.doParticlePhysics(dt)
 
     def loadAssets(self):
         self.playerTrailImg = pyglet.image.load('./assets/MusicNote.png')
@@ -113,3 +116,52 @@ class ParticleSystemManager:
     def reset(self):
         self.stop = False
         self.particleSystems = []
+
+    def doParticlePhysics(self, dt):
+            damping_factor = 0.8 
+            airDrag = 0.98
+            groundFriction = 0.98
+            gravity = 0.98
+            splatter = False
+            if not splatter:
+                dt = 1
+
+            for system in self.particleSystems:
+                if system.externalForce:
+                    for particle in system.particles:
+                        particle.yVelocity -= gravity
+                        particle.xVelocity *= airDrag
+                        particle.yVelocity *= airDrag
+                        for obstacle in self.obstacleManager.obstacles:
+                            if obstacle.contains(particle.x, particle.y, particle.radius):
+                                topObstacle = False
+                                if obstacle.top == self.window.height / 2:
+                                    topObstacle = True
+
+                                nextX = particle.x + particle.xVelocity
+                                nextY = particle.y + particle.yVelocity
+
+                                withinX = nextX >= obstacle.left and nextX < obstacle.right
+
+                                if not obstacle.boundary:
+                                    if withinX:
+                                        newVelocity = -(particle.xVelocity * damping_factor)*dt
+                                        if abs(newVelocity) < 2:
+                                            newVelocity = 0
+                                        particle.xVelocity = newVelocity 
+                                if topObstacle:
+                                    if nextY + particle.radius >= obstacle.bottom:   
+                                        newVelocity = -(particle.yVelocity * damping_factor)*dt
+                                        if abs(newVelocity) < 4:
+                                            newVelocity = 0
+                                        particle.yVelocity = newVelocity
+                                else:          
+                                    if nextY - particle.radius <= obstacle.top:  
+                                        newVelocity = -(particle.yVelocity * damping_factor)*dt
+                                        if abs(newVelocity) < 4:
+                                            newVelocity = 0
+                                        particle.yVelocity = newVelocity 
+                                    
+                                    if not topObstacle:
+                                        if particle.y + particle.radius >= obstacle.top:
+                                            particle.xVelocity *= groundFriction

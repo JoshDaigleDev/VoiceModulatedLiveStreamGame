@@ -1,44 +1,46 @@
 import threading
+import pyglet
 from TikTokLive import TikTokLiveClient
 from TikTokLive.types.events import *
 from TikTokLive.types.errors import *
 from LiveEvent import *
 
-class LiveSource:
-    def __init__(self, username, queue):
+class LiveSource(pyglet.event.EventDispatcher):
+    def __init__(self, username):
         self.client = TikTokLiveClient(unique_id=username)
         self.clientConnected = False
-        self.eventQueue = queue
 
     async def on_connect(self, event: ConnectEvent):
-        print("Connected to Room ID:", event)
+        print("Connected")
 
     async def on_comment(self, event: CommentEvent):
-        print(f"{event.user.nickname} -> {event.comment}")
+        print(f"{event.user.nickname}: {event.comment}")
     
     async def on_gift(self, event: GiftEvent):
-        print(f"{event.user.unique_id} sent \"{event.gift.info.name}\"")
-        print(f"Diamonds: {event.gift.info.diamond_count}")
-        print(f"Views: {self.client.viewer_count}")
+        user = event.user.nickname
+        gift = event.gift.info.name
         diamonds = event.gift.info.diamond_count
+        eventData = { "user": user, "gift": gift, "diamonds": diamonds }
+        self.dispatch_event('on_tiktok_gift', eventData)
 
-        self.eventQueue.push(GiftEvent(diamonds))
-
-        # It's not type 1, which means it can't have a streak & is automatically over
+    async def on_like(self, event: LikeEvent):
+        user = event.user.nickname
+        eventData = { "user": user }
+        self.dispatch_event('on_tiktok_like', eventData)
+    
+    async def on_follow(self, event: FollowEvent):
+        user = event.user.nickname
+        eventData = { "user": user }
+        self.dispatch_event('on_tiktok_follow', eventData)
 
     def start(self):
-        @self.client.on("connect")
-        async def on_connect_wrapper(event: ConnectEvent):
-            await self.on_connect(event)
-
-
-        @self.client.on("gift")
-        async def on_gift(event: GiftEvent):
-            await self.on_gift(event)
-
+        self.client.add_listener("connect", self.on_connect)
         self.client.add_listener("comment", self.on_comment)
+        self.client.add_listener("follow", self.on_comment)
         self.client.add_listener("gift", self.on_gift)
+        self.client.add_listener("like", self.on_like)
         thread = threading.Thread(target=self._run_client)
+        thread.daemon = True
         thread.start()
 
     def _run_client(self):

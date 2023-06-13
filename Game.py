@@ -1,22 +1,22 @@
 from ObstacleManager import ObstacleManager
 from PlayerManager import PlayerManager
-from AudioManager import AudioManager
 from ParticleSystemManager import ParticleSystemManager
 from TextManager import TextManager
 from LaserCannonManager import LaserCannonManager
 from LandscapeManager import LandscapeManager
+from LiveManager import LiveManager
 
-class GameManager:
+class Game:
 
     def __init__(self, window):
         self.window = window
         self.playerManager = PlayerManager(self.window)
         self.obstacleManager = ObstacleManager(self.window)
-        self.particleSystemManager = ParticleSystemManager(self.window, self.playerManager.player)
+        self.particleSystemManager = ParticleSystemManager(self.window, self.playerManager.player, self.obstacleManager)
         self.textManager = TextManager(self.window)
         self.laserCannonManager = LaserCannonManager(self.window, self.playerManager, self.particleSystemManager)
         self.landscapeManager = LandscapeManager(self.window)
-        self.audioManager = AudioManager()
+        self.liveManager = LiveManager()
         self.gameOver = False
         self.gameScore = 0
 
@@ -33,10 +33,11 @@ class GameManager:
 
     def update(self, dt):
         self.landscapeManager.update()
-        self.particleSystemManager.update()
+        self.particleSystemManager.update(dt)
         self.laserCannonManager.update()
         self.textManager.update(str(self.gameScore))
-        self.obstacleManager.update(dt)
+        if not self.gameOver:
+            self.obstacleManager.update(dt)
         if self.laserCannonManager.fired:
             self.endGame()
 
