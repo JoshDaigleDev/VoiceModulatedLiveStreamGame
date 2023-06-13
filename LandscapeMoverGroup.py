@@ -16,8 +16,6 @@ class LandscapeMoverGroup:
         moverImage = pyglet.image.load(moverImageSource)
         moverSpacingX = len(self.movers) * self.moverWidth + 1
         moverX = self.moverOriginX + moverSpacingX
-        print(moverX)
-
         moverY = self.positionY
         moverSprite = pyglet.sprite.Sprite(img=moverImage, x=moverSpacingX, y=moverY)
         mover = Mover(moverX, moverY, moverSprite)

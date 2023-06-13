@@ -31,12 +31,12 @@ class GameManager:
             self.playerManager.draw()
 
 
-    def update(self):
+    def update(self, dt):
         self.landscapeManager.update()
         self.particleSystemManager.update()
         self.laserCannonManager.update()
         self.textManager.update(str(self.gameScore))
-
+        self.obstacleManager.update(dt)
         if self.laserCannonManager.fired:
             self.endGame()
 
@@ -57,7 +57,6 @@ class GameManager:
         self.gameScore = 0
         self.playerManager.reset()
         self.obstacleManager.reset()
-        self.backgroundFrameManager.reset()
         self.particleSystemManager.reset()
 
         

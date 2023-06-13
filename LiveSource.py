@@ -22,7 +22,7 @@ class LiveSource:
         print(f"Views: {self.client.viewer_count}")
         diamonds = event.gift.info.diamond_count
 
-        self.eventQueue.push(DonationEvent(diamonds))
+        self.eventQueue.push(GiftEvent(diamonds))
 
         # It's not type 1, which means it can't have a streak & is automatically over
 

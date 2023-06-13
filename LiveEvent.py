@@ -1,9 +1,20 @@
 class LiveEvent:
-    def __init__(self):
+    def __init__(self, user):
+        self.user = user
         self.done = False
-        self.duration = 1
+        self.duration = 0
 
-class DonationEvent(LiveEvent):
-    def __init__(self, diamonds):
-        super().__init__()
-        self.diamonds = diamonds 
+class GiftEvent(LiveEvent):
+    def __init__(self, user, diamonds):
+        super().__init__(user)
+        self.giftType = None
+        self.diamonds = diamonds
+        self.duration = 3
+
+class LikeEvent:
+    def __init__(self, user):
+        super().__init__(user)
+
+class FollowEvent:
+    def __init__(self, user):
+        super().__init__(user)

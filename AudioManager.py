@@ -20,9 +20,6 @@ class AudioManager:
         value = max(value, self.lowestPitch)
         value = round(value)
 
-        #print(pitch)
-
-
         if value > self.normalPitch - self.buffer and value < self.normalPitch + self.buffer:
             movement = 0
             direction = 0

@@ -98,7 +98,7 @@ def update(dt):
         gameManager.playerManager.movePlayer(audioSource.movement*dt, audioSource.direction)
         
         
-    gameManager.update()
+    gameManager.update(dt)
     gameEvents.doParticlePhysics(dt)
 
     if not gameManager.gameOver:
