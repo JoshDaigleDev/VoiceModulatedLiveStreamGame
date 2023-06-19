@@ -1,17 +1,18 @@
 import threading
+import time
 import pyglet
 from TikTokLive import TikTokLiveClient
 from TikTokLive.types.events import *
 from TikTokLive.types.errors import *
-from LiveEvent import *
 
 class LiveSource(pyglet.event.EventDispatcher):
     def __init__(self, username):
-        self.client = TikTokLiveClient(unique_id=username)
+        self.username = username
+        self.client = TikTokLiveClient(unique_id=self.username)
         self.clientConnected = False
 
     async def on_connect(self, event: ConnectEvent):
-        print("Connected")
+        self.dispatch_event('on_tiktok_connect')
 
     async def on_comment(self, event: CommentEvent):
         print(f"{event.user.nickname}: {event.comment}")
@@ -20,23 +21,23 @@ class LiveSource(pyglet.event.EventDispatcher):
         user = event.user.nickname
         gift = event.gift.info.name
         diamonds = event.gift.info.diamond_count
-        eventData = { "user": user, "gift": gift, "diamonds": diamonds }
+        eventData = {"user": user, "gift": gift, "diamonds": diamonds}
         self.dispatch_event('on_tiktok_gift', eventData)
 
     async def on_like(self, event: LikeEvent):
         user = event.user.nickname
-        eventData = { "user": user }
+        eventData = {"user": user}
         self.dispatch_event('on_tiktok_like', eventData)
     
     async def on_follow(self, event: FollowEvent):
         user = event.user.nickname
-        eventData = { "user": user }
+        eventData = {"user": user}
         self.dispatch_event('on_tiktok_follow', eventData)
 
     def start(self):
         self.client.add_listener("connect", self.on_connect)
         self.client.add_listener("comment", self.on_comment)
-        self.client.add_listener("follow", self.on_comment)
+        self.client.add_listener("follow", self.on_follow)
         self.client.add_listener("gift", self.on_gift)
         self.client.add_listener("like", self.on_like)
         thread = threading.Thread(target=self._run_client)
@@ -44,7 +45,15 @@ class LiveSource(pyglet.event.EventDispatcher):
         thread.start()
 
     def _run_client(self):
-        self.client.run()
+        while not self.clientConnected:
+            try:
+                self.client.run()
+                self.clientConnected = True
+            except LiveNotFound:
+                print("Streamer Offline")
+                self.client.stop()
+                self.client = TikTokLiveClient(unique_id=self.username)
+                time.sleep(60)
 
     def stop(self):
         self.client.stop()

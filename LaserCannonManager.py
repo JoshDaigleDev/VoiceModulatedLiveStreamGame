@@ -1,6 +1,7 @@
 import pyglet
 import math
 from LaserProjectile import LaserProjectile
+from ProgressBar import ProgressBar
 class LaserCannonManager:
 
     def __init__(self, window, playerManager, particleSystemManager):
@@ -8,7 +9,7 @@ class LaserCannonManager:
         self.playerManager = playerManager
         self.particleSystemManager = particleSystemManager
         self.anchorX = int(-self.window.width/2 + self.window.width/16)
-        self.anchorY = int(self.window.height/8)
+        self.anchorY = -int(self.window.height/8)
         self.scaleUnit = self.window.width/200
         self.charging = False
         self.chargeTime = 0

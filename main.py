@@ -5,6 +5,7 @@ from AudioSource import AudioSource
 from LiveSource import LiveSource
 from Game import Game
 from GameEventDispatcher import GameEventDispatcher
+from EventHelpers import *
 
 #INITIALIZATION
 window = pyglet.window.Window(1920, 1080)
@@ -25,9 +26,18 @@ USERNAME = "@ad.nah"
 audioSource = AudioSource()
 liveSource = LiveSource(USERNAME)
 
+LiveSource.register_event_type('on_tiktok_connect')
+LiveSource.register_event_type('on_tiktok_like')
+LiveSource.register_event_type('on_tiktok_follow')
+LiveSource.register_event_type('on_tiktok_gift')
 #EVENT HANDLERS
 
 #LIVE EVENTS
+@liveSource.event()
+def on_tiktok_connect(data):
+    game.liveManager.handleConnect()
+
+
 @liveSource.event()
 def on_tiktok_like(data):
     game.liveManager.handleLike(data)
@@ -73,9 +83,24 @@ def on_key_press(symbol, modifiers):
     elif symbol == 65364:
         moveDown = True
     
+    #s
+    elif symbol == 115:
+        game.startLaser()
+    
     #l
     elif symbol == 108:
-        game.startLaser()
+        fakeLike = {"user": "liker"}
+        game.liveManager.handleLike(fakeLike)
+
+    #f
+    elif symbol == 102:
+        fakeFollow = {"user": "TheFollower27"}
+        game.liveManager.handleFollow(fakeFollow)
+      
+    #d
+    elif symbol == 100:
+        fakeGift = {"user": "FakeyJakey", "gift": "Banana", "diamonds": 500}
+        game.liveManager.handleGift(fakeGift)
     #\?
     else:
         print(f"symbol: {symbol}")

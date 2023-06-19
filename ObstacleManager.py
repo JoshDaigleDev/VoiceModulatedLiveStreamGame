@@ -69,19 +69,16 @@ class ObstacleManager:
         self.obstacles.append(bottomObstacle)
         self.lastObstacleTime = time.time()
 
-
     
     def reset(self):
         self.obstacles = []
         self.generate_boundaries()
-
-    
-
+        
 
     def generate_boundaries(self):
         top = self.window.height/2
         bottom = -self.window.height/2
-        boundarySize = 150
+        boundarySize = 175
 
         bottomBoundaryY = bottom 
         topBoundaryY = top - boundarySize
