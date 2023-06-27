@@ -1,10 +1,9 @@
 from EventHelpers import *
-import time
 from ProgressBar import ProgressBar
 
 class LiveManager:
-    def __init__(self, window, duration):
-        self.window = window
+    def __init__(self, dim, duration):
+        self.dim = dim
         self.duration = duration
         self.connected = False
         self.totalLikes = 0 #Total Likes for duration of stream
@@ -15,7 +14,14 @@ class LiveManager:
         self.diamondThreshhold = 500
         self.likeDuration = 10 * 60
         self.likeTimer = 0
-        self.likeProgress = ProgressBar(0, -self.window.height/2 + self.window.height/14, (0, 255, 0), self.window.width/4, self.likeGoal)
+        self.initProgressBar(dim, self.likeGoal)
+
+    def initProgressBar(self, dim, likeGoal):
+        likeProgressMaxUnits = 20
+        likeProgressX = -13*dim.unit
+        likeProgressY = -9*dim.unit
+        green = (0, 255, 0)
+        self.likeProgress = ProgressBar(dim=dim, x=likeProgressX, y=likeProgressY, colour=green, unitLen=likeProgressMaxUnits, maxProgress=likeGoal)
 
 
     def draw(self):
@@ -56,6 +62,7 @@ class LiveManager:
         self.currentLikes += 1
         self.totalLikes += 1
         self.likeProgress.increment(1)
+
 
     def handleFollow(self, data):
         user = data['user']

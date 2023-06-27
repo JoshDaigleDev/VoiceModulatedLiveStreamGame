@@ -9,16 +9,16 @@ from LiveManager import LiveManager
 from EventHelpers import FollowEvent, GiftEvent, LikeEvent
 class Game:
 
-    def __init__(self, window):
+    def __init__(self, dim):
         self.eventDuration = 3
-        self.window = window
-        self.playerManager = PlayerManager(self.window)
-        self.obstacleManager = ObstacleManager(self.window)
-        self.particleSystemManager = ParticleSystemManager(self.window, self.playerManager.player, self.obstacleManager)
-        self.textManager = TextManager(self.window)
-        self.laserCannonManager = LaserCannonManager(self.window, self.playerManager, self.particleSystemManager)
-        self.landscapeManager = LandscapeManager(self.window)
-        self.liveManager = LiveManager(self.window, self.eventDuration)
+        self.dim = dim
+        self.playerManager = PlayerManager(self.dim)
+        self.obstacleManager = ObstacleManager(self.dim)
+        self.particleSystemManager = ParticleSystemManager(self.dim, self.playerManager.player, self.obstacleManager)
+        self.textManager = TextManager(self.dim)
+        self.laserCannonManager = LaserCannonManager(self.dim, self.playerManager, self.particleSystemManager)
+        self.landscapeManager = LandscapeManager(self.dim)
+        self.liveManager = LiveManager(self.dim, self.eventDuration)
         self.gameOver = False
         self.gameScore = 0
 
@@ -60,14 +60,13 @@ class Game:
             self.textManager.addTempLabel(text)
         if isinstance(event, GiftEvent):
             print("Gift Event")
-            self.textManager.addLabel(event)
             text = f"{event.user} donated {event.diamonds} diamonds!"
             self.textManager.addTempLabel(text)
             self.laserCannonManager.fuelLaser(event.diamonds)
             self.textManager.updateLaserCharge(self.laserCannonManager.laserFuel)
         if isinstance(event, LikeEvent):
             print("Like Event")
-            self.obstacleManager.setDifficulty(event.amount)
+            #self.obstacleManager.setDifficulty(event.amount)
             pass
 
     def endGame(self):

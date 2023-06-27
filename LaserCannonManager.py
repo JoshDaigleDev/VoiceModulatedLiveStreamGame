@@ -1,16 +1,14 @@
 import pyglet
 import math
 from LaserProjectile import LaserProjectile
-from ProgressBar import ProgressBar
 class LaserCannonManager:
 
-    def __init__(self, window, playerManager, particleSystemManager):
-        self.window = window
+    def __init__(self, dim, playerManager, particleSystemManager):
+        self.dim = dim
         self.playerManager = playerManager
         self.particleSystemManager = particleSystemManager
-        self.anchorX = int(-self.window.width/2 + self.window.width/16)
-        self.anchorY = -int(self.window.height/8)
-        self.scaleUnit = self.window.width/200
+        self.anchorX = int(-17*dim.unit)
+        self.anchorY = int(-2*dim.unit)
         self.charging = False
         self.chargeTime = 0
         self.postChargeTime = 0
@@ -88,43 +86,43 @@ class LaserCannonManager:
         self.laserBaseSprite.draw()
 
     def load_assets(self):
-        self.laserBarrelImage = pyglet.image.load("./assets/PixelBarrel64.png")
-        self.laserBarrelImage.anchor_x = -int(self.scaleUnit*20)
-        self.laserBarrelImage.anchor_y = int(self.laserBarrelImage.height/2)
-        self.laserWidth = self.laserBarrelImage.width*0.75
+        unit, w, h = self.dim.getDimensions()
 
+        # BARREL
+        self.laserBarrelImage = pyglet.image.load("./assets/PixelBarrel64.png")
+        self.laserBarrelImage.anchor_x = -4*unit
+        self.laserBarrelImage.anchor_y = int(self.laserBarrelImage.height/2)
+
+        # BASE   
         self.laserBaseImage = pyglet.image.load("./assets/PixelBase64.png")
-        self.laserBaseImage.anchor_x = int(self.scaleUnit*2)
+        self.laserBaseImage.anchor_x = unit
         self.laserBaseImage.anchor_y = int(self.laserBaseImage.height/2)
         
+        # PLATFORM
         self.laserPlatformImage = pyglet.image.load("./assets/PixelPlatform64.png")
-        self.laserPlatformImage.anchor_x = int(self.scaleUnit*14)
-        self.laserPlatformImage.anchor_y = int(self.laserPlatformImage.height/2)
 
-
+        self.laserWidth = self.laserBarrelImage.width*0.75
         self.mediaPlayer = pyglet.media.Player()
         self.laserFireAudio = pyglet.media.load('./Assets/LaserShoot.mp3')
         self.laserChargeAudio = pyglet.media.load('./Assets/LaserCharge.mp3')
 
     def init_sprites(self):
+        unit, w, h = self.dim.getDimensions()
+
         self.laserBarrelSprite = pyglet.sprite.Sprite(img=self.laserBarrelImage, x=self.anchorX, y=self.anchorY)
-        self.OGBX = self.laserBarrelSprite.x
-        self.OGBY = self.laserBarrelSprite.y
-
         self.laserBaseSprite = pyglet.sprite.Sprite(img=self.laserBaseImage, x=self.anchorX, y=self.anchorY)
-
-        self.laserPlatformSprite = pyglet.sprite.Sprite(img=self.laserPlatformImage, x=self.anchorX, y=self.anchorY)
-
+        self.laserPlatformSprite = pyglet.sprite.Sprite(img=self.laserPlatformImage, x=-self.dim.w - 1/4*self.dim.unit, y=-7*self.dim.unit)
         self.laserCharge = pyglet.shapes.Rectangle(x=self.anchorX, y=self.anchorY, width=self.laserWidth, height=self.laserWidth/8, color=(255,0,0))
-        self.laserCharge.anchor_x = -int(self.scaleUnit*16)
-        self.laserCharge.anchor_y = self.laserCharge.height/2
+        
+        self.laserCharge.anchor_x = -4*unit
+        self.laserCharge.anchor_y = int(self.laserCharge.height/2)
 
 
     def start_laser(self):
         self.charging = True
-        
         self.play_sound(self.laserChargeAudio)
     
+
     def play_sound(self, sound):
         self.mediaPlayer.queue(sound)
         if self.mediaPlayer.playing:
@@ -152,8 +150,10 @@ class LaserCannonManager:
     def fuelLaser(self, diamonds):
         self.laserFuel = min(self.maxFuel, self.laserFuel + diamonds)
     
+
     def canFire(self):
         return self.laserFuel >= self.maxFuel
+
 
     def reset(self):
         self.fired = False

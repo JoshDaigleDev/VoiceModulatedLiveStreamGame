@@ -2,21 +2,10 @@ import pyglet
 from LandscapeMoverGroup import LandscapeMoverGroup
 class LandscapeManager:
 
-    def __init__(self, window):
-        self.window = window
-        self.boundarySize = 150
-
-        self.initAtmosphere()
-        
-        self.initFirstGrass()
-        self.initSecondGrass()
-        self.initThirdGrass()
-        self.initFourthGrass()
-
-        self.initTopClouds()
-        self.initMidClouds()
-        self.initBotClouds()
-
+    def __init__(self, dim):
+        self.dim = dim
+        self.boundarySize = 3 * dim.unit
+        self.init(dim)
 
     def update(self):
         self.firstGrass.update()
@@ -32,29 +21,49 @@ class LandscapeManager:
     def draw(self):
         self.atmosphere.draw()
 
+        #Clouds
+        self.botClouds.draw()
+        self.midClouds.draw()
+        self.topClouds.draw()
+
+        #Grass
         self.fourthGrass.draw()
         self.thirdGrass.draw()
         self.secondGrass.draw()
         self.firstGrass.draw()
 
-        self.botClouds.draw()
-        self.midClouds.draw()
-        self.topClouds.draw()
+
+    def init(self, dim):
+        unit, w, h = dim.getDimensions()
+
+        self.initAtmosphere(unit, w)
+
+        #Clouds
+        self.initTopClouds(unit, w)
+        self.initMidClouds(unit, w)
+        self.initBotClouds(unit, w)
+
+        #Grass
+        self.initFirstGrass(unit, w)
+        self.initSecondGrass(unit, w)
+        self.initThirdGrass(unit)
+        self.initFourthGrass(unit, w)
 
 
-    def initAtmosphere(self):
+    def initAtmosphere(self, unit, w):
         atmosphereImage = pyglet.image.load("./assets/Atmosphere.png")
-        atmosphereX = -self.window.width/2
-        atmosphereY = -self.window.height/3
+        atmosphereX = -w
+        atmosphereY = -7*unit
+
         self.atmosphere = pyglet.sprite.Sprite(img=atmosphereImage, x=atmosphereX, y=atmosphereY)
 
-    def initTopClouds(self):
-        self.topCloudSpacing = 620
-        self.topCloudSpeed = 0.4
-        self.topCloudX = -self.window.width/2
-        self.topCloudY = self.window.height/8 
-        self.topClouds = LandscapeMoverGroup(self.window, self.topCloudSpacing, self.topCloudSpeed, self.topCloudX, self.topCloudY)
-
+    def initTopClouds(self, unit, w):
+        topCloudSpacing = 620
+        topCloudSpeed = 0.4
+        topCloudX = -w
+        topCloudY = 2*unit
+        
+        self.topClouds = LandscapeMoverGroup(self.dim, topCloudSpacing, topCloudSpeed, topCloudX, topCloudY)
         self.topClouds.addMover("./assets/PixelCloud1.png")
         self.topClouds.addMover("./assets/PixelCloud2.png")
         self.topClouds.addMover("./assets/PixelCloud3.png")
@@ -65,13 +74,13 @@ class LandscapeManager:
         self.topClouds.addMover("./assets/PixelCloud4.png")
 
 
-    def initMidClouds(self):
-        self.midCloudSpacing = 512
-        self.midCloudSpeed = 0.3
-        self.midCloudX = -self.window.width/2
-        self.midCloudY = 0
-        self.midClouds = LandscapeMoverGroup(self.window, self.midCloudSpacing, self.midCloudSpeed, self.midCloudX, self.midCloudY)
+    def initMidClouds(self, unit, w):
+        midCloudSpacing = 512
+        midCloudSpeed = 0.3
+        midCloudX = -w
+        midCloudY = -unit
 
+        self.midClouds = LandscapeMoverGroup(self.dim, midCloudSpacing, midCloudSpeed, midCloudX, midCloudY)
         self.midClouds.addMover("./assets/PixelMidCloud1.png")
         self.midClouds.addMover("./assets/PixelMidCloud2.png")
         self.midClouds.addMover("./assets/PixelMidCloud3.png")
@@ -79,13 +88,13 @@ class LandscapeManager:
         self.midClouds.addMover("./assets/PixelMidCloud1.png")
 
 
-    def initBotClouds(self):
-        self.botCloudSpacing = 320
-        self.botCloudSpeed = 0.2
-        self.botCloudX = -self.window.width/2
-        self.botCloudY = -self.window.height/8 
-        self.botClouds = LandscapeMoverGroup(self.window, self.botCloudSpacing, self.botCloudSpeed, self.botCloudX, self.botCloudY)
+    def initBotClouds(self, unit, w):
+        botCloudSpacing = 320
+        botCloudSpeed = 0.2
+        botCloudX = -w
+        botCloudY = -2.5*unit
 
+        self.botClouds = LandscapeMoverGroup(self.dim, botCloudSpacing, botCloudSpeed, botCloudX, botCloudY)
         self.botClouds.addMover("./assets/PixelSmallCloud1.png")
         self.botClouds.addMover("./assets/PixelSmallCloud2.png")
         self.botClouds.addMover("./assets/PixelSmallCloud3.png")
@@ -95,13 +104,13 @@ class LandscapeManager:
         self.botClouds.addMover("./assets/PixelSmallCloud3.png")
         self.botClouds.addMover("./assets/PixelSmallCloud4.png") 
 
-    def initFirstGrass(self):
-        self.firstGrassWidth = 512
-        self.firstGrassSpeed = 1
-        self.firstGrassX = -self.window.width/2
-        self.firstGrassY = -self.window.height/2 + self.boundarySize
-        self.firstGrass = LandscapeMoverGroup(self.window, self.firstGrassWidth, self.firstGrassSpeed, self.firstGrassX, self.firstGrassY)
-        
+    def initFirstGrass(self, unit, w):
+        firstGrassWidth = 512
+        firstGrassSpeed = 1
+        firstGrassX = -w
+        firstGrassY = -7*unit
+
+        self.firstGrass = LandscapeMoverGroup(self.dim, firstGrassWidth, firstGrassSpeed, firstGrassX, firstGrassY)
         self.firstGrass.addMover("./assets/PixelGrass1.png")
         self.firstGrass.addMover("./assets/PixelGrass2.png")
         self.firstGrass.addMover("./assets/PixelGrass3.png")
@@ -110,34 +119,34 @@ class LandscapeManager:
         self.firstGrass.addMover("./assets/PixelGrass6.png")
     
 
-    def initSecondGrass(self):
-        self.secondGrassWidth = 2048
-        self.secondGrassSpeed = 0.7
-        self.secondGrassX = -self.window.width/2
-        self.secondGrassY = -self.window.height/2 + self.boundarySize
-        self.secondGrass = LandscapeMoverGroup(self.window, self.secondGrassWidth, self.secondGrassSpeed, self.secondGrassX, self.secondGrassY)
-        
+    def initSecondGrass(self, unit, w):
+        secondGrassWidth = 2048
+        secondGrassSpeed = 0.7
+        secondGrassX = -w
+        secondGrassY = -7*unit
+
+        self.secondGrass = LandscapeMoverGroup(self.dim, secondGrassWidth, secondGrassSpeed, secondGrassX, secondGrassY)
         self.secondGrass.addMover("./assets/Grass2.png")
         self.secondGrass.addMover("./assets/Grass2.png")
 
 
-    def initThirdGrass(self):
-        self.thirdGrassWidth = 2048
-        self.thirdGrassSpeed = 0.4
-        self.thirdGrassX = -self.window.width/3
-        self.thirdGrassY = -self.window.height/2 + self.boundarySize
-        self.thirdGrass = LandscapeMoverGroup(self.window, self.thirdGrassWidth, self.thirdGrassSpeed, self.thirdGrassX, self.thirdGrassY)
-        
+    def initThirdGrass(self, unit):
+        thirdGrassWidth = 2048
+        thirdGrassSpeed = 0.4
+        thirdGrassX = -4*unit
+        thirdGrassY = -7*unit
+
+        self.thirdGrass = LandscapeMoverGroup(self.dim, thirdGrassWidth, thirdGrassSpeed, thirdGrassX, thirdGrassY)
         self.thirdGrass.addMover("./assets/Grass3.png")
         self.thirdGrass.addMover("./assets/Grass3.png")
 
 
-    def initFourthGrass(self):
-        self.fourthGrassWidth = 2048
-        self.fourthGrassSpeed = 0.1
-        self.fourthGrassX = -self.window.width
-        self.fourthGrassY = -self.window.height/2 + self.boundarySize
-        self.fourthGrass = LandscapeMoverGroup(self.window, self.fourthGrassWidth, self.fourthGrassSpeed, self.fourthGrassX, self.fourthGrassY)
-        
+    def initFourthGrass(self, unit, w):
+        fourthGrassWidth = 2048
+        fourthGrassSpeed = 0.1
+        fourthGrassX = -2*w
+        fourthGrassY = -7*unit
+
+        self.fourthGrass = LandscapeMoverGroup(self.dim, fourthGrassWidth, fourthGrassSpeed, fourthGrassX, fourthGrassY)
         self.fourthGrass.addMover("./assets/Grass4.png")
         self.fourthGrass.addMover("./assets/Grass4.png")

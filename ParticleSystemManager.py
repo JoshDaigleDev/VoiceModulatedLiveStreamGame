@@ -5,8 +5,8 @@ from ParticleSystem import LaserSystem
 
 class ParticleSystemManager:
 
-    def __init__(self, window, player, obstacleManager):
-        self.window = window
+    def __init__(self, dim, player, obstacleManager):
+        self.dim = dim
         self.player = player
         self.obstacleManager = obstacleManager
         self.particleSystems = []
@@ -135,7 +135,7 @@ class ParticleSystemManager:
                         for obstacle in self.obstacleManager.obstacles:
                             if obstacle.contains(particle.x, particle.y, particle.radius):
                                 topObstacle = False
-                                if obstacle.top == self.window.height / 2:
+                                if obstacle.top == self.dim.h:
                                     topObstacle = True
 
                                 nextX = particle.x + particle.xVelocity

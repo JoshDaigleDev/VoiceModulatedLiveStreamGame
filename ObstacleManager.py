@@ -5,8 +5,8 @@ from LaserProjectile import LaserProjectile
 import time
 
 class ObstacleManager:
-    def __init__(self, window):
-        self.window = window
+    def __init__(self, dim):
+        self.dim = dim
         self.obstacles = []
         self.obstacleSpeed = 300
         
@@ -28,7 +28,7 @@ class ObstacleManager:
         for obstacle in self.obstacles:
             if not obstacle.boundary:
                 obstacle.update(-self.obstacleSpeed * dt, 0)
-                if obstacle.x + obstacle.width < -self.window.width/2:
+                if obstacle.x + obstacle.width < -self.dim.w:
                     self.obstacles.remove(obstacle)
         
 
@@ -39,12 +39,12 @@ class ObstacleManager:
 
 
     def generate_obstacle(self):
-        top = self.window.height/2
-        bottom = -self.window.height/2
-        randomSegment = self.noise(self.nextNoiseSeed) * self.window.height/3
+        top = self.dim.h
+        bottom = -self.dim.h
+        randomSegment = self.noise(self.nextNoiseSeed) * self.dim.h/3
         self.nextNoiseSeed += 0.8
         obstacleWidth = 300
-        originX = self.window.width/2
+        originX = self.dim.w
               
         bottomObstacleY = bottom
         topObstacleY = randomSegment + self.obstacleSpacing
@@ -76,15 +76,15 @@ class ObstacleManager:
         
 
     def generate_boundaries(self):
-        top = self.window.height/2
-        bottom = -self.window.height/2
+        top = self.dim.h
+        bottom = -self.dim.h
         boundarySize = 175
 
         bottomBoundaryY = bottom 
         topBoundaryY = top - boundarySize
 
-        topBoundary = Obstacle(-self.window.width/2, topBoundaryY, self.window.width, boundarySize, boundary=True)
-        bottomBoundary = Obstacle(-self.window.width/2, bottomBoundaryY, self.window.width, boundarySize, boundary=True)
+        topBoundary = Obstacle(-self.dim.w, topBoundaryY, 2 * self.dim.w, boundarySize, boundary=True)
+        bottomBoundary = Obstacle(-self.dim.w, bottomBoundaryY, 2 * self.dim.w, boundarySize, boundary=True)
 
         topBoundary.passed = True
         bottomBoundary.passed = True

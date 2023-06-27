@@ -6,19 +6,26 @@ from LiveSource import LiveSource
 from Game import Game
 from GameEventDispatcher import GameEventDispatcher
 from EventHelpers import *
-
-
+from DotDict import DotDict
 
 #INITIALIZATION
 
 # This is a backup incase changing dimension goes terribly wrong. 
+unit = 50
+dimDict = {
+    "unit": unit,
+    "w": unit * 20, 
+    "h": unit * 10, 
+    "getDimensions": lambda: (unit, unit * 20, unit * 10)
+}
 
-# dim = {"w": 1000, "h":500}
+dim = DotDict(dimDict)
+
 window = pyglet.window.Window(1920, 1080)
-projection = Mat4.orthogonal_projection(-window.width/2, window.width/2, -window.height/2, window.height/2, z_near=-255, z_far=255)
+projection = Mat4.orthogonal_projection(-dim.w, dim.w, -dim.h, dim.h, z_near=-unit, z_far=unit)
 pyglet.gl.glClearColor(115/255, 191/255, 230/255, 1)
 
-game = Game(window)
+game = Game(dim)
 gameEvents = GameEventDispatcher(game)
 
 GameEventDispatcher.register_event_type('on_collision')
@@ -158,4 +165,3 @@ def main():
     pyglet.app.run()
 
 main()
-

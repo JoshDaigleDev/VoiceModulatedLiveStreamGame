@@ -2,8 +2,8 @@ import pyglet
 from Player import Player
 
 class PlayerManager:
-    def __init__(self, window):
-        self.window = window
+    def __init__(self, dim):
+        self.dim = dim
         self.ORIGIN_X = 0
         self.ORIGIN_Y = 0
         self.playerImage = pyglet.image.load('./assets/PlayerIconVibe.png')
@@ -14,9 +14,9 @@ class PlayerManager:
 
 
     def movePlayer(self, movement, direction):
-        if movement > 0 and self.player.y + self.player.radius < self.window.height/2:
+        if movement > 0 and self.player.y + self.player.radius < self.dim.h:
             self.player.move(0, movement, direction)
-        elif movement < 0 and self.player.y - self.player.radius > -self.window.height/2:
+        elif movement < 0 and self.player.y - self.player.radius > -self.dim.h:
             self.player.move(0, movement, direction)
         self.player.update()
 

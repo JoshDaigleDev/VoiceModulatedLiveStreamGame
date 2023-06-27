@@ -5,9 +5,7 @@ class GameEventDispatcher(pyglet.event.EventDispatcher):
     def __init__(self, game):
         self.obstacleManager = game.obstacleManager
         self.playerManager = game.playerManager
-        self.particleSystemManager = game.particleSystemManager
-        self.window = game.window
-    
+        self.particleSystemManager = game.particleSystemManager    
     
     def detectCollision(self):
         playerX = self.playerManager.player.x

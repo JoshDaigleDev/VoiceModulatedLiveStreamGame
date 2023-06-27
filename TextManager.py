@@ -2,8 +2,8 @@ import pyglet
 from pyglet import font
 class TextManager():
     
-    def __init__(self, window):
-        self.window = window
+    def __init__(self, dim):
+        self.dim = dim
         self.tempLabels = []
         font.add_file('./assets/Perfect DOS VGA 437 Win.ttf')
         self.eightBitFont = font.load('Perfect DOS VGA 437 Win', 64)
@@ -21,23 +21,25 @@ class TextManager():
         self.scoreLabel.text = f"{round(score)}"
     
     def updateLaserCharge(self, charge):
-        self.laserChargeLabel.text = f"💎: {charge}/10000"
+        self.laserChargeLabel.text = f"Diamonds: {charge}/10000"
     
     def updateLikeTimer(self, time):
         self.likeTimerLabel.text = f"{time}"
     
     def initCoordinates(self):
-        self.tempLabelX = 0
-        self.tempLabelY = self.window.height/2.3
+        unit, w, h = self.dim.getDimensions()
 
-        self.scoreLabelX = self.window.width/4
+        self.tempLabelX = 0
+        self.tempLabelY = 9*unit
+
+        self.scoreLabelX = 1/2*w
         self.scoreLabelY = 0
 
-        self.laserChargeX = -self.window.width/2
-        self.laserChargeY = self.window.height/12
+        self.laserChargeX = -w
+        self.laserChargeY = 3*unit
 
-        self.likeTimerX = -self.window.width/10
-        self.likeTimerY = -self.window.height/2 + self.window.height/16
+        self.likeTimerX = -4*unit
+        self.likeTimerY = -9*unit
     
     def addTempLabel(self, text):
         label = pyglet.text.Label(
@@ -46,8 +48,7 @@ class TextManager():
             font_size=self.eightBitFont.size,
             x=self.tempLabelX,
             y=self.tempLabelY,
-            anchor_x='center',
-            anchor_y='center'
+            anchor_x='center'
             )
         duration = 2
         self.tempLabels.append((label, duration))
@@ -67,7 +68,7 @@ class TextManager():
             )
         
         self.laserChargeLabel = pyglet.text.Label(
-            "💎: 0/10000", 
+            "Diamonds: 0/10000", 
             font_name=self.eightBitFont.name,
             font_size=self.eightBitFont.size,
             x=self.laserChargeX,
