@@ -65,3 +65,7 @@ class LiveManager:
 
     def handleConnected(self):
         self.connected = True
+    
+    def reset(self):
+        self.likeTimer = 0
+        self.currentLikes = 0

@@ -38,11 +38,13 @@ class Game:
         self.landscapeManager.update()
         self.particleSystemManager.update(dt)
         self.laserCannonManager.update()
-        self.textManager.update(str(self.gameScore))
+        self.textManager.updateScore(self.gameScore)
         if not self.gameOver:
             self.obstacleManager.update(dt)
+            self.textManager.updateLikeTimer(round(10-self.liveManager.likeTimer/60, 1))
         if self.laserCannonManager.fired:
             self.endGame()
+            self.textManager.updateLaserCharge(self.laserCannonManager.laserFuel)
 
         if True:#self.liveManager.connected:
             self.liveManager.update()
@@ -54,14 +56,18 @@ class Game:
     def handleNextEvent(self, event):
         if isinstance(event, FollowEvent):
             print("Follow Event")
-            #self.textManager.addLabel(event)
+            text = f"{event.user} followed!"
+            self.textManager.addTempLabel(text)
         if isinstance(event, GiftEvent):
             print("Gift Event")
-            #self.textManager.addLabel(event)
-            #self.laserCannonManager.chargeLaser(event.diamonds)
+            self.textManager.addLabel(event)
+            text = f"{event.user} donated {event.diamonds} diamonds!"
+            self.textManager.addTempLabel(text)
+            self.laserCannonManager.fuelLaser(event.diamonds)
+            self.textManager.updateLaserCharge(self.laserCannonManager.laserFuel)
         if isinstance(event, LikeEvent):
             print("Like Event")
-            #self.obstacleManager.setDifficulty(event.amount)
+            self.obstacleManager.setDifficulty(event.amount)
             pass
 
     def endGame(self):
@@ -70,10 +76,9 @@ class Game:
         self.gameOver = True
         self.laserCannonManager.reset()
 
-
     def startLaser(self):
-        self.laserCannonManager.start_laser()
-
+        if self.laserCannonManager.canFire():
+            self.laserCannonManager.start_laser()
 
     def reset(self):
         self.gameOver = False
@@ -81,6 +86,7 @@ class Game:
         self.playerManager.reset()
         self.obstacleManager.reset()
         self.particleSystemManager.reset()
+        self.liveManager.reset()
 
         
     def increaseScore(self):

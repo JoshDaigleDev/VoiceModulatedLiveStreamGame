@@ -22,6 +22,8 @@ class LaserCannonManager:
         self.postCharging = False
         self.load_assets()
         self.init_sprites()
+        self.laserFuel = 0
+        self.maxFuel = 1000
 
 
     def update(self):
@@ -144,7 +146,15 @@ class LaserCannonManager:
         self.particleSystemManager.fire_laser(laser)
         self.fired = True
         self.play_sound(self.laserFireAudio)
-        
+        self.laserFuel = 0
+
+    
+    def fuelLaser(self, diamonds):
+        self.laserFuel = min(self.maxFuel, self.laserFuel + diamonds)
+    
+    def canFire(self):
+        return self.laserFuel >= self.maxFuel
 
     def reset(self):
         self.fired = False
+        self.laserFuel = 0

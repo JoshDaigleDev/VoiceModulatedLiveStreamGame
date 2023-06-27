@@ -7,7 +7,13 @@ from Game import Game
 from GameEventDispatcher import GameEventDispatcher
 from EventHelpers import *
 
+
+
 #INITIALIZATION
+
+# This is a backup incase changing dimension goes terribly wrong. 
+
+# dim = {"w": 1000, "h":500}
 window = pyglet.window.Window(1920, 1080)
 projection = Mat4.orthogonal_projection(-window.width/2, window.width/2, -window.height/2, window.height/2, z_near=-255, z_far=255)
 pyglet.gl.glClearColor(115/255, 191/255, 230/255, 1)
