@@ -14,14 +14,14 @@ class LiveManager:
         self.diamondThreshhold = 500
         self.likeDuration = 10 * 60
         self.likeTimer = 0
+        self.cycleFinished = False
         self.initProgressBar(dim, self.likeGoal)
 
     def initProgressBar(self, dim, likeGoal):
-        likeProgressMaxUnits = 20
-        likeProgressX = -13*dim.unit
+        likeProgressMaxUnits = 28
+        likeProgressX = -12*dim.unit
         likeProgressY = -9*dim.unit
-        green = (0, 255, 0)
-        self.likeProgress = ProgressBar(dim=dim, x=likeProgressX, y=likeProgressY, colour=green, unitLen=likeProgressMaxUnits, maxProgress=likeGoal)
+        self.likeProgress = ProgressBar(dim=dim, x=likeProgressX, y=likeProgressY, unitLen=likeProgressMaxUnits, maxProgress=likeGoal) 
 
 
     def draw(self):
@@ -29,9 +29,10 @@ class LiveManager:
     
     def getNextEvent(self):
         nextEvent = None
-        if self.likeAmount > 0:
-            nextEvent = LikeEvent(self.likeAmount)
+        if self.cycleFinished:
+            nextEvent = LikeEvent(self.likeAmount, self.likeGoal)
             self.likeAmount = 0
+            self.cycleFinished = False
         elif self.liveEventQueue.isReady:
             nextEvent = self.liveEventQueue.dequeue()
         return nextEvent
@@ -44,6 +45,7 @@ class LiveManager:
             self.likeTimer = 0
             self.likeAmount = self.currentLikes
             self.currentLikes = 0
+            self.cycleFinished = True
             
 
     def handleGift(self, data):
@@ -76,3 +78,5 @@ class LiveManager:
     def reset(self):
         self.likeTimer = 0
         self.currentLikes = 0
+        self.likeAmount = 0
+        self.likeProgress.reset()

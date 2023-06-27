@@ -2,7 +2,7 @@ import pyglet
 from Mover import Mover
 
 class Obstacle(Mover):
-    def __init__(self, x, y, width, height, sprite=None, boundary=False):
+    def __init__(self, x, y, width, height, top=False, sprite=None, boundary=False):
         super().__init__(x,y)
         self.width = width
         self.height = height
@@ -18,7 +18,7 @@ class Obstacle(Mover):
         self.right = x + width
         self.top = y + height
         self.bottom = y
-        self.isTop = self.y > 0
+        self.isTop = top
 
         self.rectangle = pyglet.shapes.Rectangle(self.x, self.y, self.width, self.height, color=(0, 0, 0))
 

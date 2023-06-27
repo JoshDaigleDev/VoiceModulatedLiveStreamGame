@@ -46,6 +46,7 @@ class FollowEvent(LiveEvent):
         self.user = user
 
 class LikeEvent(LiveEvent):
-    def __init__(self, amount):
+    def __init__(self, amount, goal):
         super().__init__()
         self.amount = amount
+        self.goal = goal

@@ -71,7 +71,7 @@ class AudioSource(threading.Thread):
             if self.normalPitch - value < value - self.lowestPitch:
                 movement = -self.speed
             else:
-                movement = - self.speed
+                movement = -2*self.speed
             direction = 1
             sound = True
         elif value > self.normalPitch + self.buffer:

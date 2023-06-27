@@ -66,8 +66,15 @@ class Game:
             self.textManager.updateLaserCharge(self.laserCannonManager.laserFuel)
         if isinstance(event, LikeEvent):
             print("Like Event")
-            #self.obstacleManager.setDifficulty(event.amount)
-            pass
+            goalPercentage = event.amount/event.goal
+            difficultyLevel = 4
+            if goalPercentage >= 1:
+                difficultyLevel = 1
+            elif goalPercentage >= 0.5:
+                difficultyLevel = 4 - int((goalPercentage - 0.5) * 6)
+            text = f"Like Event: Difficulty: {difficultyLevel}"
+            self.textManager.addTempLabel(text)
+            self.obstacleManager.setDifficulty(difficultyLevel)
 
     def endGame(self):
         if not self.gameOver:

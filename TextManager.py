@@ -21,7 +21,7 @@ class TextManager():
         self.scoreLabel.text = f"{round(score)}"
     
     def updateLaserCharge(self, charge):
-        self.laserChargeLabel.text = f"Diamonds: {charge}/10000"
+        self.laserChargeLabel.text = f"Diamonds: {charge}/1000"
     
     def updateLikeTimer(self, time):
         self.likeTimerLabel.text = f"{time}"
@@ -30,15 +30,15 @@ class TextManager():
         unit, w, h = self.dim.getDimensions()
 
         self.tempLabelX = 0
-        self.tempLabelY = 9*unit
+        self.tempLabelY = 8*unit
 
-        self.scoreLabelX = 1/2*w
+        self.scoreLabelX = 10*unit
         self.scoreLabelY = 0
 
-        self.laserChargeX = -w
+        self.laserChargeX = -19*unit
         self.laserChargeY = 3*unit
 
-        self.likeTimerX = -4*unit
+        self.likeTimerX = -17*unit
         self.likeTimerY = -9*unit
     
     def addTempLabel(self, text):
@@ -64,11 +64,11 @@ class TextManager():
             font_size=172,
             x=self.scoreLabelX, 
             y=self.scoreLabelY,
-            color=(237, 10, 187, 255)
+            color=(0, 0, 0, 255)#(237, 10, 187, 255)
             )
         
         self.laserChargeLabel = pyglet.text.Label(
-            "Diamonds: 0/10000", 
+            "Diamonds: 0/1000", 
             font_name=self.eightBitFont.name,
             font_size=self.eightBitFont.size,
             x=self.laserChargeX,

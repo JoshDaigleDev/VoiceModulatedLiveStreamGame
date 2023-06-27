@@ -1,8 +1,6 @@
 import pyglet
-from perlin_noise import PerlinNoise
 from Obstacle import Obstacle
-from LaserProjectile import LaserProjectile
-import time
+import random
 
 class ObstacleManager:
     def __init__(self, dim):
@@ -10,80 +8,91 @@ class ObstacleManager:
         self.obstacles = []
         self.obstacleSpeed = 300
         
-        self.noise = PerlinNoise()
-        self.obstacleSpacing = 200
-        self.nextNoiseSeed = 1
         self.generate_boundaries()
 
         self.generationTime = 0
-        self.generationTimeMax = 120
-        self.topObstacleImage = pyglet.image.load("./assets/PixelPillar.png")
-        self.bottomObstacleImage = pyglet.image.load("./assets/PixelPillar.png")
+        self.generationTimeMax = 150
+        self.topObstacleImage = pyglet.image.load("./assets/ArrowObstacleTop.png")
+        self.bottomObstacleImage = pyglet.image.load("./assets/ArrowObstacle.png")
+
+        self.run = False
 
     def draw(self):
         for obstacle in reversed(self.obstacles):
             obstacle.draw()
     
     def update(self, dt):
-        for obstacle in self.obstacles:
-            if not obstacle.boundary:
-                obstacle.update(-self.obstacleSpeed * dt, 0)
-                if obstacle.x + obstacle.width < -self.dim.w:
-                    self.obstacles.remove(obstacle)
-        
+        if self.run: 
+            for obstacle in self.obstacles:
+                if not obstacle.boundary:
+                    obstacle.update(-self.obstacleSpeed * dt, 0)
+                    if obstacle.x + obstacle.width < -self.dim.w:
+                        self.obstacles.remove(obstacle)
+            
+            self.generationTime += 1
+            if len(self.obstacles) == 0 or self.generationTime >= self.generationTimeMax:
+                self.generate_obstacle()
+                self.generationTime = 0
+    
 
-        self.generationTime += 1
-        if len(self.obstacles) == 0 or self.generationTime >= self.generationTimeMax:
-            self.generate_obstacle()
-            self.generationTime = 0
+    def setDifficulty(self, level):
+        self.obstacleCenterRange = level - 1
+        self.obstacleSpacing = (7 - level) * self.dim.unit
+        self.run = True
 
 
     def generate_obstacle(self):
-        top = self.dim.h
-        bottom = -self.dim.h
-        randomSegment = self.noise(self.nextNoiseSeed) * self.dim.h/3
-        self.nextNoiseSeed += 0.8
-        obstacleWidth = 300
-        originX = self.dim.w
-              
-        bottomObstacleY = bottom
-        topObstacleY = randomSegment + self.obstacleSpacing
-        topObstacleHeight = top - randomSegment - self.obstacleSpacing
-        bottomObstacleHeight = randomSegment - self.obstacleSpacing - bottomObstacleY
+        unit, w, h = self.dim.getDimensions()
 
-        topSprite = None
-        bottomSprite = None
+        #COORDINATES 
+        try:
+            obstacleSetCenter = random.randint(-self.obstacleCenterRange, self.obstacleCenterRange)*unit
+            obstacleWidth = 6*unit
+            obstacleHeight = 7*unit
+            obstacleX = w       
+            topObstacleY = obstacleSetCenter + self.obstacleSpacing
+            bottomObstacleY = obstacleSetCenter - self.obstacleSpacing - obstacleHeight
 
-        topSprite = pyglet.sprite.Sprite(x=originX, y=topObstacleY, img=self.topObstacleImage)
-        topSprite.scale_y = topObstacleHeight/topSprite.height
-        topSprite.scale_x = obstacleWidth/topSprite.width
 
-        bottomSprite = pyglet.sprite.Sprite(x=originX, y=bottomObstacleY, img=self.bottomObstacleImage)
-        bottomSprite.scale_y = bottomObstacleHeight/bottomSprite.height
-        bottomSprite.scale_x = obstacleWidth/bottomSprite.width
+            #SPRITES 
+            topSprite = None
+            bottomSprite = None
 
-        topObstacle = Obstacle(originX, topObstacleY, obstacleWidth, topObstacleHeight, sprite=topSprite, boundary=False)
-        bottomObstacle = Obstacle(originX, bottomObstacleY, obstacleWidth, bottomObstacleHeight, sprite=bottomSprite, boundary=False)
+            #TOP INIT AND SCALING 
+            topSprite = pyglet.sprite.Sprite(x=obstacleX, y=topObstacleY, img=self.topObstacleImage)
+            topSprite.scale_y = obstacleHeight/topSprite.height
+            topSprite.scale_x = obstacleWidth/topSprite.width
 
-        self.obstacles.append(topObstacle)
-        self.obstacles.append(bottomObstacle)
-        self.lastObstacleTime = time.time()
+            #BOTTOM INIT AND SCALING 
+            bottomSprite = pyglet.sprite.Sprite(x=obstacleX, y=bottomObstacleY, img=self.bottomObstacleImage)
+            bottomSprite.scale_y = obstacleHeight/bottomSprite.height
+            bottomSprite.scale_x = obstacleWidth/bottomSprite.width
+
+            #OBSTACLE OBJECTS 
+            topObstacle = Obstacle(obstacleX, topObstacleY, obstacleWidth, obstacleHeight, top=True, sprite=topSprite, boundary=False)
+            bottomObstacle = Obstacle(obstacleX, bottomObstacleY, obstacleWidth, obstacleHeight, sprite=bottomSprite, boundary=False)
+
+            self.obstacles.append(topObstacle)
+            self.obstacles.append(bottomObstacle)
+        except ValueError:
+            print(self.obstacleCenterRange)
 
     
     def reset(self):
         self.obstacles = []
         self.generate_boundaries()
+        self.run = False
         
 
     def generate_boundaries(self):
         top = self.dim.h
         bottom = -self.dim.h
-        boundarySize = 175
+        boundarySize = 3*self.dim.unit
 
         bottomBoundaryY = bottom 
         topBoundaryY = top - boundarySize
 
-        topBoundary = Obstacle(-self.dim.w, topBoundaryY, 2 * self.dim.w, boundarySize, boundary=True)
+        topBoundary = Obstacle(-self.dim.w, topBoundaryY, 2 * self.dim.w, boundarySize, top=True, boundary=True)
         bottomBoundary = Obstacle(-self.dim.w, bottomBoundaryY, 2 * self.dim.w, boundarySize, boundary=True)
 
         topBoundary.passed = True
