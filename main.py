@@ -98,7 +98,8 @@ def on_key_press(symbol, modifiers):
     
     #s
     elif symbol == 115:
-        game.startLaser()
+        fakeGift = {"user": "shooter", "gift": "moneygun", "diamonds": 500}
+        game.liveManager.handleGift(fakeGift)
     
     #l
     elif symbol == 108:
@@ -109,10 +110,15 @@ def on_key_press(symbol, modifiers):
     elif symbol == 102:
         fakeFollow = {"user": "TheFollower27"}
         game.liveManager.handleFollow(fakeFollow)
+    
+    #h
+    elif symbol == 104:
+        fakeGift = {"user": "hardGuy", "gift": "difficult", "diamonds": 1000}
+        game.liveManager.handleGift(fakeGift)
       
     #d
     elif symbol == 100:
-        fakeGift = {"user": "FakeyJakey", "gift": "Banana", "diamonds": 500}
+        fakeGift = {"user": "FakeyJakey", "gift": "Banana", "diamonds": 400}
         game.liveManager.handleGift(fakeGift)
     #\?
     else:

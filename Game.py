@@ -21,6 +21,9 @@ class Game:
         self.liveManager = LiveManager(self.dim, self.eventDuration)
         self.gameOver = False
         self.gameScore = 0
+        self.CANNON_DIAMOND_AMOUNT = 500
+        self.HARDMODE_DIAMOND_AMOUNT = 1000
+        self.HARDMODE_DURATION = 30 * 60
 
 
     def draw(self):
@@ -35,17 +38,19 @@ class Game:
 
 
     def update(self, dt):
-        self.landscapeManager.update()
         self.particleSystemManager.update(dt)
-        self.laserCannonManager.update()
         self.textManager.updateScore(self.gameScore)
+        self.laserCannonManager.update()
         if not self.gameOver:
+            self.landscapeManager.update()
             self.obstacleManager.update(dt)
-            self.textManager.updateLikeTimer(round(10-self.liveManager.likeTimer/60, 1))
+            if not self.obstacleManager.hardmode:
+                self.textManager.updateTimer(round(10-self.liveManager.likeTimer/60, 1))
+            else:
+                self.textManager.updateTimer(round(self.obstacleManager.hardmodeTimer/60, 1))
         if self.laserCannonManager.fired:
             self.endGame()
-            self.textManager.updateLaserCharge(self.laserCannonManager.laserFuel)
-
+            self.textManager.updateTimer(10)
         if True:#self.liveManager.connected:
             self.liveManager.update()
             nextEvent = self.liveManager.getNextEvent()
@@ -55,26 +60,11 @@ class Game:
 
     def handleNextEvent(self, event):
         if isinstance(event, FollowEvent):
-            print("Follow Event")
-            text = f"{event.user} followed!"
-            self.textManager.addTempLabel(text)
+            self.handleFollowEvent(event)
         if isinstance(event, GiftEvent):
-            print("Gift Event")
-            text = f"{event.user} donated {event.diamonds} diamonds!"
-            self.textManager.addTempLabel(text)
-            self.laserCannonManager.fuelLaser(event.diamonds)
-            self.textManager.updateLaserCharge(self.laserCannonManager.laserFuel)
+            self.handleGiftEvent(event)
         if isinstance(event, LikeEvent):
-            print("Like Event")
-            goalPercentage = event.amount/event.goal
-            difficultyLevel = 4
-            if goalPercentage >= 1:
-                difficultyLevel = 1
-            elif goalPercentage >= 0.5:
-                difficultyLevel = 4 - int((goalPercentage - 0.5) * 6)
-            text = f"Like Event: Difficulty: {difficultyLevel}"
-            self.textManager.addTempLabel(text)
-            self.obstacleManager.setDifficulty(difficultyLevel)
+            self.handleLikeEvent(event)
 
     def endGame(self):
         if not self.gameOver:
@@ -83,8 +73,7 @@ class Game:
         self.laserCannonManager.reset()
 
     def startLaser(self):
-        if self.laserCannonManager.canFire():
-            self.laserCannonManager.start_laser()
+        self.laserCannonManager.start_laser()
 
     def reset(self):
         self.gameOver = False
@@ -92,8 +81,60 @@ class Game:
         self.playerManager.reset()
         self.obstacleManager.reset()
         self.particleSystemManager.reset()
-        self.liveManager.reset()
+        if not self.obstacleManager.hardmode:
+            self.liveManager.reset()
 
         
     def increaseScore(self):
         self.gameScore += 0.5
+
+
+    def handleGiftEvent(self, event):
+        print("Gift Event")
+        text = f"{event.user} donated {event.diamonds} diamonds!"
+        self.textManager.addTempLabel(text, 8)
+        if event.diamonds == self.CANNON_DIAMOND_AMOUNT:
+            self.laserCannonManager.start_laser()
+            text = f"{event.user} Fired The Laser Cannon!"
+            self.textManager.addTempLabel(text, 4)
+        elif event.diamonds == self.HARDMODE_DIAMOND_AMOUNT:
+            self.liveManager.setHideProgressBarTimer(self.HARDMODE_DURATION)
+            text = f"{event.user} Has Activated Hardmode!"
+            self.textManager.addTempLabel(text, -9, 5, (255, 0, 0, 255))
+            self.obstacleManager.activateHardmode(self.HARDMODE_DURATION)
+
+
+    def handleFollowEvent(self, event):
+        print("Follow Event")
+        text = f"{event.user} followed!"
+        self.textManager.addTempLabel(text, 8)
+
+
+    def handleLikeEvent(self, event):
+        print("Like Event")
+        goalPercentage = event.amount/event.goal
+        difficulty = "Hard"
+        textColor = (255, 255, 255, 255)
+        if goalPercentage >= 1:
+            difficultyLevel = 1
+            difficulty = "Easy"
+            textColor = (0, 255, 255, 255)
+        elif goalPercentage >= 0.7:
+            difficultyLevel = 2
+            difficulty = "Normal"
+            textColor = (0, 255, 0, 255)
+        elif goalPercentage >= 0.4:
+            difficultyLevel = 3
+            difficulty = "Tough"
+            textColor = (255, 255, 0, 255)
+        else:
+            difficultyLevel = 4
+            difficulty = "Hard"
+            textColor = (255, 0, 0, 255)
+
+        text = f"Difficulty: {difficulty}"
+        if not self.gameOver:
+            if self.liveManager.showProgressBar:
+                self.liveManager.setHideProgressBarTimer(120)
+                self.textManager.addTempLabel(text, -9, color=textColor)
+            self.obstacleManager.setDifficulty(difficultyLevel)

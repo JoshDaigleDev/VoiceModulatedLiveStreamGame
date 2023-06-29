@@ -9,13 +9,15 @@ class LiveManager:
         self.totalLikes = 0 #Total Likes for duration of stream
         self.currentLikes = 0 #Likes for current cycle
         self.likeAmount = 0 #Final like amount for prevous cycle 
-        self.likeGoal = 10
+        self.likeGoal = 50
         self.liveEventQueue = LiveEventQueue(self.duration)
-        self.diamondThreshhold = 500
+        self.diamondThreshhold = 299
         self.likeDuration = 10 * 60
         self.likeTimer = 0
         self.cycleFinished = False
         self.initProgressBar(dim, self.likeGoal)
+        self.showProgressBar = True
+        self.progressBarHideTimer = 0
 
     def initProgressBar(self, dim, likeGoal):
         likeProgressMaxUnits = 28
@@ -25,7 +27,15 @@ class LiveManager:
 
 
     def draw(self):
-        self.likeProgress.draw()
+        if self.showProgressBar:
+            self.likeProgress.draw()
+    
+    def updateHideProgressBarTimer(self):
+        if self.progressBarHideTimer > 0:
+            self.showProgressBar = False
+            self.progressBarHideTimer -= 1
+        else:
+            self.showProgressBar = True
     
     def getNextEvent(self):
         nextEvent = None
@@ -37,8 +47,15 @@ class LiveManager:
             nextEvent = self.liveEventQueue.dequeue()
         return nextEvent
     
+    def setHideProgressBarTimer(self, duration):
+        self.progressBarHideTimer = duration
+    
     def update(self):
         self.liveEventQueue.update()
+        self.updateLikeCycles()
+        self.updateHideProgressBarTimer()
+    
+    def updateLikeCycles(self):
         self.likeTimer += 1
         if self.likeTimer >= self.likeDuration:
             self.likeProgress.reset()
@@ -46,7 +63,6 @@ class LiveManager:
             self.likeAmount = self.currentLikes
             self.currentLikes = 0
             self.cycleFinished = True
-            
 
     def handleGift(self, data):
         user = data['user']

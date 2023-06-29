@@ -20,9 +20,9 @@ class Player(Mover):
         self.currentRotation = direction * self.rotationAmount
         
         if self.sprite.rotation < self.currentRotation:
-            self.rotationIncrement += 0.5
+            self.rotationIncrement += 1
         elif self.sprite.rotation > self.currentRotation:
-            self.rotationIncrement -= 0.5
+            self.rotationIncrement -= 1
         self.sprite.rotation = self.rotationIncrement
 
 

@@ -12,17 +12,27 @@ class ObstacleManager:
 
         self.generationTime = 0
         self.generationTimeMax = 150
-        self.topObstacleImage = pyglet.image.load("./assets/ArrowObstacleTop.png")
-        self.bottomObstacleImage = pyglet.image.load("./assets/ArrowObstacle.png")
+        self.topObstacleImageRed = pyglet.image.load("./assets/ArrowObstacleTopRed.png")
+        self.topObstacleImageBlue = pyglet.image.load("./assets/ArrowObstacleTopBlue.png")
+        self.topObstacleImageGreen = pyglet.image.load("./assets/ArrowObstacleTopGreen.png")
+        self.topObstacleImageYellow = pyglet.image.load("./assets/ArrowObstacleTopYellow.png")
+        self.bottomObstacleImageRed = pyglet.image.load("./assets/ArrowObstacleBottomRed.png")
+        self.bottomObstacleImageBlue = pyglet.image.load("./assets/ArrowObstacleBottomBlue.png")
+        self.bottomObstacleImageGreen = pyglet.image.load("./assets/ArrowObstacleBottomGreen.png")
+        self.bottomObstacleImageYellow = pyglet.image.load("./assets/ArrowObstacleBottomYellow.png")
 
         self.run = False
+
+        self.hardmodeTimer = 0
+        self.hardmode = False
 
     def draw(self):
         for obstacle in reversed(self.obstacles):
             obstacle.draw()
     
     def update(self, dt):
-        if self.run: 
+        self.updateHardmode()
+        if self.run or self.hardmode: 
             for obstacle in self.obstacles:
                 if not obstacle.boundary:
                     obstacle.update(-self.obstacleSpeed * dt, 0)
@@ -34,15 +44,58 @@ class ObstacleManager:
                 self.generate_obstacle()
                 self.generationTime = 0
     
+    def updateHardmode(self):
+        if self.hardmodeTimer >= 0:
+            self.hardmodeTimer -= 1
+        else:
+            self.hardmode = False
+    
+    def activateHardmode(self, timer):
+        self.difficultyLevel = 4
+        self.obstacleCenterRange = self.difficultyLevel - 1
+        self.obstacleSpacing = (7 - self.difficultyLevel) * self.dim.unit
+        self.hardmodeTimer = timer
+        self.hardmode = True
+    
 
     def setDifficulty(self, level):
-        self.obstacleCenterRange = level - 1
-        self.obstacleSpacing = (7 - level) * self.dim.unit
+        
+        difficultyLevel = level
+
+        if self.hardmodeTimer >= 0:
+            difficultyLevel = 4
+
+        self.obstacleCenterRange = difficultyLevel - 1
+        self.obstacleSpacing = (7 - difficultyLevel) * self.dim.unit
+        self.difficultyLevel = difficultyLevel
         self.run = True
 
 
     def generate_obstacle(self):
         unit, w, h = self.dim.getDimensions()
+        topImage = None
+        bottomImage = None
+
+        difficulty = self.difficultyLevel
+        if self.hardmodeTimer >= 0:
+            difficulty = 4
+
+        if difficulty == 1:
+            topImage = self.topObstacleImageBlue
+            bottomImage = self.bottomObstacleImageBlue
+            pass
+        elif difficulty == 2:
+            topImage = self.topObstacleImageGreen
+            bottomImage = self.bottomObstacleImageGreen
+            pass
+        elif difficulty == 3:
+            topImage = self.topObstacleImageYellow
+            bottomImage = self.bottomObstacleImageYellow
+            pass
+        elif difficulty == 4: 
+            topImage = self.topObstacleImageRed
+            bottomImage = self.bottomObstacleImageRed
+            pass
 
         #COORDINATES 
         try:
@@ -59,12 +112,12 @@ class ObstacleManager:
             bottomSprite = None
 
             #TOP INIT AND SCALING 
-            topSprite = pyglet.sprite.Sprite(x=obstacleX, y=topObstacleY, img=self.topObstacleImage)
+            topSprite = pyglet.sprite.Sprite(x=obstacleX, y=topObstacleY, img=topImage)
             topSprite.scale_y = obstacleHeight/topSprite.height
             topSprite.scale_x = obstacleWidth/topSprite.width
 
             #BOTTOM INIT AND SCALING 
-            bottomSprite = pyglet.sprite.Sprite(x=obstacleX, y=bottomObstacleY, img=self.bottomObstacleImage)
+            bottomSprite = pyglet.sprite.Sprite(x=obstacleX, y=bottomObstacleY, img=bottomImage)
             bottomSprite.scale_y = obstacleHeight/bottomSprite.height
             bottomSprite.scale_x = obstacleWidth/bottomSprite.width
 
