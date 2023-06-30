@@ -34,6 +34,7 @@ backgroundSky = pyglet.image.load("./assets/BGSky.png")
 
 moveUp = False
 moveDown = False
+paused = False
 
 USERNAME = "@ad.nah"
 audioSource = AudioSource()
@@ -83,6 +84,7 @@ def on_draw():
 def on_key_press(symbol, modifiers):
     global moveUp
     global moveDown
+    global paused
 
     #space 
     if symbol == 32:
@@ -115,6 +117,10 @@ def on_key_press(symbol, modifiers):
     elif symbol == 104:
         fakeGift = {"user": "hardGuy", "gift": "difficult", "diamonds": 1000}
         game.liveManager.handleGift(fakeGift)
+    
+    #p
+    elif symbol == 112:
+        paused = not paused
       
     #d
     elif symbol == 100:
@@ -145,22 +151,25 @@ def on_close():
 
 #MAIN UPDATE LOOP 
 def update(dt):
-    #GAME UPDATES 
-    game.update(dt)
-    if not game.gameOver:
-        gameEvents.detectCollision()
-        gameEvents.detectScore()
+    global paused
 
-    # MOVEMENT HANDLING: 
-    global moveUp
-    global moveDown
-    if moveUp or moveDown:
-        if moveUp:
-            game.playerManager.movePlayer(150*dt, -1)
-        elif moveDown:
-            game.playerManager.movePlayer(-150*dt, 1)
-    else:
-        game.playerManager.movePlayer(audioSource.movement*dt, audioSource.direction)
+    if not paused:
+        #GAME UPDATES 
+        game.update(dt)
+        if not game.gameOver:
+            gameEvents.detectCollision()
+            gameEvents.detectScore()
+
+        # MOVEMENT HANDLING: 
+        global moveUp
+        global moveDown
+        if moveUp or moveDown:
+            if moveUp:
+                game.playerManager.movePlayer(150*dt, -1)
+            elif moveDown:
+                game.playerManager.movePlayer(-150*dt, 1)
+        else:
+            game.playerManager.movePlayer(audioSource.movement*dt, audioSource.direction)
 
 
 

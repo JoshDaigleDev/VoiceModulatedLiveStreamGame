@@ -45,7 +45,7 @@ class Game:
             self.landscapeManager.update()
             self.obstacleManager.update(dt)
             if not self.obstacleManager.hardmode:
-                self.textManager.updateTimer(round(10-self.liveManager.likeTimer/60, 1))
+                self.textManager.updateTimer(round(self.liveManager.likeTimer/60, 1))
             else:
                 self.textManager.updateTimer(round(self.obstacleManager.hardmodeTimer/60, 1))
         if self.laserCannonManager.fired:
@@ -56,7 +56,7 @@ class Game:
             nextEvent = self.liveManager.getNextEvent()
             if nextEvent:
                 self.handleNextEvent(nextEvent)
-         
+        
 
     def handleNextEvent(self, event):
         if isinstance(event, FollowEvent):

@@ -13,7 +13,7 @@ class LiveManager:
         self.liveEventQueue = LiveEventQueue(self.duration)
         self.diamondThreshhold = 299
         self.likeDuration = 10 * 60
-        self.likeTimer = 0
+        self.likeTimer = self.likeDuration
         self.cycleFinished = False
         self.initProgressBar(dim, self.likeGoal)
         self.showProgressBar = True
@@ -56,10 +56,10 @@ class LiveManager:
         self.updateHideProgressBarTimer()
     
     def updateLikeCycles(self):
-        self.likeTimer += 1
-        if self.likeTimer >= self.likeDuration:
+        self.likeTimer -= 1
+        if self.likeTimer <= 0:
             self.likeProgress.reset()
-            self.likeTimer = 0
+            self.likeTimer = self.likeDuration
             self.likeAmount = self.currentLikes
             self.currentLikes = 0
             self.cycleFinished = True
