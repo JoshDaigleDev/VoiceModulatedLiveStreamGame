@@ -13,7 +13,7 @@ class TextManager():
     def draw(self):
 
         unit, w, h = self.dim.getDimensions()
-        cannonBG = pyglet.shapes.Rectangle(self.laserChargeX-0.5*unit, self.laserChargeY-0.5*unit, 6.8*unit, 1.5*unit, color=(0,0,0,255))
+        cannonBG = pyglet.shapes.Rectangle(self.laserChargeX-0.5*unit, self.laserChargeY-0.5*unit, 9*unit, 1.5*unit, color=(0,0,0,255))
         cannonBG.draw()
 
         difficultyBG = pyglet.shapes.Rectangle(self.difficultyX-0.5*unit, self.difficultyY-0.5*unit, 10*unit, 1.5*unit, color=(0,0,0,255))
@@ -53,7 +53,7 @@ class TextManager():
         self.difficultyX = -19*unit
         self.difficultyY = 5*unit
 
-        self.diamondEmojiCanX = -14.1*unit
+        self.diamondEmojiCanX = -11.8*unit
         self.diamondEmojiDifX = -10.8*unit
 
         self.timerX = -17*unit
@@ -87,7 +87,7 @@ class TextManager():
             )
         
         self.laserChargeLabel = pyglet.text.Label(
-            "Cannon:199", 
+            "Fire Cannon:199", 
             font_name=self.eightBitFont.name,
             font_size=32,
             x=self.laserChargeX,
