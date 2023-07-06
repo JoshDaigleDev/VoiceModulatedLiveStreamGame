@@ -23,16 +23,15 @@ class ObstacleManager:
 
         self.run = False
 
-        self.hardmodeTimer = 0
         self.hardmode = False
 
     def draw(self):
         for obstacle in reversed(self.obstacles):
             obstacle.draw()
     
-    def update(self, dt):
-        self.updateHardmode()
-        if self.run or self.hardmode: 
+    def update(self, dt, hardMode):
+        self.hardmode = hardMode
+        if self.run: 
             for obstacle in self.obstacles:
                 if not obstacle.boundary:
                     obstacle.update(-self.obstacleSpeed * dt, 0)
@@ -44,25 +43,12 @@ class ObstacleManager:
                 self.generate_obstacle()
                 self.generationTime = 0
     
-    def updateHardmode(self):
-        if self.hardmodeTimer >= 0:
-            self.hardmodeTimer -= 1
-        else:
-            self.hardmode = False
-    
-    def activateHardmode(self, timer):
-        self.difficultyLevel = 4
-        self.obstacleCenterRange = self.difficultyLevel - 1
-        self.obstacleSpacing = (7 - self.difficultyLevel) * self.dim.unit
-        self.hardmodeTimer = timer
-        self.hardmode = True
-    
 
     def setDifficulty(self, level):
         
         difficultyLevel = level
 
-        if self.hardmodeTimer >= 0:
+        if self.hardmode:
             difficultyLevel = 4
 
         self.obstacleCenterRange = difficultyLevel - 1
@@ -77,7 +63,7 @@ class ObstacleManager:
         bottomImage = None
 
         difficulty = self.difficultyLevel
-        if self.hardmodeTimer >= 0:
+        if self.hardmode:
             difficulty = 4
 
         if difficulty == 1:

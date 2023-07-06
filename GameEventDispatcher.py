@@ -5,24 +5,31 @@ class GameEventDispatcher(pyglet.event.EventDispatcher):
     def __init__(self, game):
         self.obstacleManager = game.obstacleManager
         self.playerManager = game.playerManager
-        self.particleSystemManager = game.particleSystemManager    
+        self.particleSystemManager = game.particleSystemManager
+        self.laserHitbox = game.laserHitbox
+
     
     def detectCollision(self):
         playerX = self.playerManager.player.x
         playerY = self.playerManager.player.y
         playerRadius = self.playerManager.player.radius
         buffer = 10
+        collision = False
+        if self.laserHitbox.hit(self.playerManager.player):
+            self.dispatch_event('on_collision')
+            collision = True
 
-        for obstacle in self.obstacleManager.obstacles:
-            nearX = max(obstacle.left, min(playerX, obstacle.right))
-            nearY = max(obstacle.bottom, min(playerY, obstacle.top))
+        if not collision:
+            for obstacle in self.obstacleManager.obstacles:
+                nearX = max(obstacle.left, min(playerX, obstacle.right))
+                nearY = max(obstacle.bottom, min(playerY, obstacle.top))
 
-            distance = math.sqrt((playerX - nearX)**2 + (playerY - nearY)**2)
-            
-            if distance <= playerRadius-buffer:
-                self.dispatch_event('on_collision')
-                break
-    
+                distance = math.sqrt((playerX - nearX)**2 + (playerY - nearY)**2)
+                
+                if distance <= playerRadius-buffer:
+                    self.dispatch_event('on_collision')
+                    break
+        
 
     def detectScore(self):
         playerX = self.playerManager.player.x

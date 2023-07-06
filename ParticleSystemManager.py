@@ -117,6 +117,9 @@ class ParticleSystemManager:
         self.stop = False
         self.particleSystems = []
 
+    def activeLaser(self):
+        return len(self.lasers.lasers) > 0
+
     def doParticlePhysics(self, dt):
             damping_factor = 0.8 
             airDrag = 0.98

@@ -2,41 +2,20 @@ from EventHelpers import *
 from ProgressBar import ProgressBar
 
 class LiveManager:
-    def __init__(self, dim, duration):
+    def __init__(self, dim, likeCycleDuration, eventDuration):
         self.dim = dim
-        self.duration = duration
+        self.duration = eventDuration
         self.connected = False
         self.totalLikes = 0 #Total Likes for duration of stream
         self.currentLikes = 0 #Likes for current cycle
         self.likeAmount = 0 #Final like amount for prevous cycle 
         self.likeGoal = 50
         self.liveEventQueue = LiveEventQueue(self.duration)
-        self.diamondThreshhold = 299
-        self.likeDuration = 10 * 60
+        self.diamondThreshhold = 199
+        self.likeDuration = likeCycleDuration
         self.likeTimer = self.likeDuration
         self.cycleFinished = False
-        self.initProgressBar(dim, self.likeGoal)
-        self.showProgressBar = True
-        self.progressBarHideTimer = 0
 
-    def initProgressBar(self, dim, likeGoal):
-        likeProgressMaxUnits = 28
-        likeProgressX = -12*dim.unit
-        likeProgressY = -9*dim.unit
-        self.likeProgress = ProgressBar(dim=dim, x=likeProgressX, y=likeProgressY, unitLen=likeProgressMaxUnits, maxProgress=likeGoal) 
-
-
-    def draw(self):
-        if self.showProgressBar:
-            self.likeProgress.draw()
-    
-    def updateHideProgressBarTimer(self):
-        if self.progressBarHideTimer > 0:
-            self.showProgressBar = False
-            self.progressBarHideTimer -= 1
-        else:
-            self.showProgressBar = True
-    
     def getNextEvent(self):
         nextEvent = None
         if self.cycleFinished:
@@ -47,22 +26,14 @@ class LiveManager:
             nextEvent = self.liveEventQueue.dequeue()
         return nextEvent
     
-    def setHideProgressBarTimer(self, duration):
-        self.progressBarHideTimer = duration
-    
     def update(self):
         self.liveEventQueue.update()
-        self.updateLikeCycles()
-        self.updateHideProgressBarTimer()
     
-    def updateLikeCycles(self):
-        self.likeTimer -= 1
-        if self.likeTimer <= 0:
-            self.likeProgress.reset()
-            self.likeTimer = self.likeDuration
-            self.likeAmount = self.currentLikes
-            self.currentLikes = 0
-            self.cycleFinished = True
+    def finishCycle(self):
+        self.likeAmount = self.currentLikes
+        self.currentLikes = 0
+        self.cycleFinished = True
+
 
     def handleGift(self, data):
         user = data['user']
@@ -79,7 +50,6 @@ class LiveManager:
         print(f"Live Manager: {data['user']}: LIKED")
         self.currentLikes += 1
         self.totalLikes += 1
-        self.likeProgress.increment(1)
 
 
     def handleFollow(self, data):
@@ -88,11 +58,12 @@ class LiveManager:
         event = FollowEvent(user)
         self.liveEventQueue.enqueue(event)
 
+
     def handleConnected(self):
         self.connected = True
+
     
     def reset(self):
         self.likeTimer = 0
         self.currentLikes = 0
         self.likeAmount = 0
-        self.likeProgress.reset()

@@ -30,7 +30,6 @@ gameEvents = GameEventDispatcher(game)
 
 GameEventDispatcher.register_event_type('on_collision')
 GameEventDispatcher.register_event_type('on_score')
-backgroundSky = pyglet.image.load("./assets/BGSky.png")
 
 moveUp = False
 moveDown = False
@@ -54,6 +53,7 @@ def on_tiktok_connect(data):
 
 @liveSource.event()
 def on_tiktok_like(data):
+    game.individualLike()
     game.liveManager.handleLike(data)
 
 @liveSource.event()
@@ -100,12 +100,13 @@ def on_key_press(symbol, modifiers):
     
     #s
     elif symbol == 115:
-        fakeGift = {"user": "shooter", "gift": "moneygun", "diamonds": 500}
+        fakeGift = {"user": "shooter", "gift": "moneygun", "diamonds": 199}
         game.liveManager.handleGift(fakeGift)
     
     #l
     elif symbol == 108:
         fakeLike = {"user": "liker"}
+        game.individualLike()
         game.liveManager.handleLike(fakeLike)
 
     #f

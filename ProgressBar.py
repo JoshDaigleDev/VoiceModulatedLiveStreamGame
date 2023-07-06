@@ -2,7 +2,7 @@ import pyglet
 
 class ProgressBar:
 
-    def __init__(self, dim, x, y, unitLen, maxProgress):
+    def __init__(self, dim, x, y, unitLen, maxProgress, hard=False):
         self.dim = dim
         self.progress = 0
         self.maxProgress = maxProgress
@@ -15,25 +15,32 @@ class ProgressBar:
         self.color = self.red
         self.bar = pyglet.shapes.Rectangle(x=x, y=y, width=self.width, height=dim.unit, color=self.color)
         self.barOutline = pyglet.shapes.Rectangle(x=x-dim.unit/5, y=y-dim.unit/5, width=self.width + 2/5*dim.unit, height=dim.unit + 2/5*dim.unit, color=(255, 255, 255))
+        self.hard = hard
+        if self.hard:
+            self.bar.scale_x = -1
 
     
     def increment(self, amount):
-        self.progress += amount
-        if self.progress > self.maxProgress:
-            self.progress = self.maxProgress
-        
-        progressPercent = self.progress / self.maxProgress
+        if not self.hard:
+            self.progress += amount
+            if self.progress > self.maxProgress:
+                self.progress = self.maxProgress
+            
+            progressPercent = self.progress / self.maxProgress
 
-        if progressPercent >= 1:
-            self.color = self.blue
-        elif progressPercent >= 0.70:
-            self.color = self.green
-        elif progressPercent >= 0.4:
-            self.color = self.yellow
-        else:
-            self.color = self.red
-        
-        self.bar.color = self.color
+            if progressPercent >= 1:
+                self.color = self.blue
+            elif progressPercent >= 0.70:
+                self.color = self.green
+            elif progressPercent >= 0.4:
+                self.color = self.yellow
+            else:
+                self.color = self.red
+            
+            self.bar.color = self.color
+    
+    def setAmount(self, amount):
+        self.progress = amount
         
 
     def reset(self):

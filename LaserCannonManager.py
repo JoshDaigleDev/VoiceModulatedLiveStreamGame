@@ -3,10 +3,11 @@ import math
 from LaserProjectile import LaserProjectile
 class LaserCannonManager:
 
-    def __init__(self, dim, playerManager, particleSystemManager):
+    def __init__(self, dim, playerManager, particleSystemManager, laserHitbox):
         self.dim = dim
         self.playerManager = playerManager
         self.particleSystemManager = particleSystemManager
+        self.laserHitbox = laserHitbox
         self.anchorX = int(-17*dim.unit)
         self.anchorY = int(-2*dim.unit)
         self.charging = False
@@ -24,7 +25,7 @@ class LaserCannonManager:
         self.maxFuel = 1000
 
 
-    def update(self):
+    def update(self, gameOver):
         if self.charging:
             self.chargeTime += 1
             if self.chargeTime == self.maxCharge and not self.postCharging:
@@ -58,15 +59,25 @@ class LaserCannonManager:
                 self.laserBarrelSprite.scale_y = 1
         
         self.trim_sound()
+        if not gameOver:
+            angle = self.getAngleToTarget(self.laserHitbox.targetX, self.laserHitbox.targetY)
+            self.rotateCannon(angle)
 
-        self.laserBarrelSprite.rotation = self.getAngleToPlayer()
-        self.laserBaseSprite.rotation = self.getAngleToPlayer()
-        self.laserCharge.rotation = self.getAngleToPlayer()
+
+    def rotateCannon(self, angle):
+        self.laserBarrelSprite.rotation = angle
+        self.laserBaseSprite.rotation = angle
+        self.laserCharge.rotation = angle
 
     
     def getAngleToPlayer(self):
         diffX = self.playerManager.player.x - self.laserBarrelSprite.x
         diffY = self.playerManager.player.y - self.laserBarrelSprite.y
+        return -math.degrees(math.atan2(diffY, diffX))
+
+    def getAngleToTarget(self, targetX, targetY):
+        diffX = targetX - self.laserBarrelSprite.x
+        diffY = targetY - self.laserBarrelSprite.y
         return -math.degrees(math.atan2(diffY, diffX))
     
     def draw(self):
@@ -140,7 +151,7 @@ class LaserCannonManager:
 
     
     def fire_laser(self):
-        laser = LaserProjectile(self.laserBarrelSprite.x, self.laserBarrelSprite.y, self.laserWidth*10, self.laserWidth/8, self.getAngleToPlayer())
+        laser = LaserProjectile(self.laserBarrelSprite.x, self.laserBarrelSprite.y, self.laserWidth*10, self.laserWidth/8, self.getAngleToTarget(self.laserHitbox.targetX, self.laserHitbox.targetY))
         self.particleSystemManager.fire_laser(laser)
         self.fired = True
         self.play_sound(self.laserFireAudio)

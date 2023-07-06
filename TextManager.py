@@ -87,7 +87,7 @@ class TextManager():
             )
         
         self.laserChargeLabel = pyglet.text.Label(
-            "Cannon:500", 
+            "Cannon:199", 
             font_name=self.eightBitFont.name,
             font_size=32,
             x=self.laserChargeX,

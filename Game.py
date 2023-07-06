@@ -5,25 +5,38 @@ from TextManager import TextManager
 from LaserCannonManager import LaserCannonManager
 from LandscapeManager import LandscapeManager
 from LiveManager import LiveManager
+from ProgressBarManager import ProgressBarManager
+from LaserHitBox import LaserHitBox
 
 from EventHelpers import FollowEvent, GiftEvent, LikeEvent
 class Game:
 
     def __init__(self, dim):
-        self.eventDuration = 3
         self.dim = dim
         self.playerManager = PlayerManager(self.dim)
         self.obstacleManager = ObstacleManager(self.dim)
+        self.laserAnchorX = -17*dim.unit
+        self.laserAnchorY = -2*dim.unit
+        self.laserHitbox = LaserHitBox(self.dim, self.laserAnchorX, self.laserAnchorY)
         self.particleSystemManager = ParticleSystemManager(self.dim, self.playerManager.player, self.obstacleManager)
         self.textManager = TextManager(self.dim)
-        self.laserCannonManager = LaserCannonManager(self.dim, self.playerManager, self.particleSystemManager)
+        self.laserCannonManager = LaserCannonManager(self.dim, self.playerManager, self.particleSystemManager, self.laserHitbox)
         self.landscapeManager = LandscapeManager(self.dim)
-        self.liveManager = LiveManager(self.dim, self.eventDuration)
+        self.progressBarManager = ProgressBarManager(self.dim)
         self.gameOver = False
         self.gameScore = 0
-        self.CANNON_DIAMOND_AMOUNT = 500
+        self.CANNON_DIAMOND_AMOUNT = 199
         self.HARDMODE_DIAMOND_AMOUNT = 1000
         self.HARDMODE_DURATION = 30 * 60
+        self.LIKE_GOAL = 50
+        self.LIKE_DURATION = 10 * 60
+        self.EVENT_DURATION = 3
+        self.likeTimer = self.LIKE_DURATION
+        self.hardTimer =  self.HARDMODE_DURATION
+        self.liveManager = LiveManager(self.dim, self.LIKE_DURATION, self.EVENT_DURATION)
+        self.progressBarManager.initLikeBar(self.LIKE_GOAL)
+        self.progressBarManager.initHardBar(self.HARDMODE_DURATION / 60)
+        self.hardMode = False
 
 
     def draw(self):
@@ -32,31 +45,37 @@ class Game:
         self.obstacleManager.draw()
         self.laserCannonManager.draw()
         self.textManager.draw()
-        self.liveManager.draw()
+        self.progressBarManager.draw()
         if not self.gameOver:
             self.playerManager.draw()
+        self.laserHitbox.draw()
 
 
     def update(self, dt):
         self.particleSystemManager.update(dt)
         self.textManager.updateScore(self.gameScore)
-        self.laserCannonManager.update()
+        self.laserCannonManager.update(self.gameOver)
+        self.liveManager.update()
+        self.laserHitbox.update(self.particleSystemManager.activeLaser(), self.gameOver)
+
+        nextEvent = self.liveManager.getNextEvent()
+        if nextEvent:
+            self.handleNextEvent(nextEvent)
+        
         if not self.gameOver:
             self.landscapeManager.update()
-            self.obstacleManager.update(dt)
-            if not self.obstacleManager.hardmode:
-                self.textManager.updateTimer(round(self.liveManager.likeTimer/60, 1))
+            self.obstacleManager.update(dt, self.hardMode)
+            self.updateHardCycle()
+            self.updateLikeCycle()
+            self.progressBarManager.update()
+            if not self.hardMode:
+                self.textManager.updateTimer(round(self.likeTimer/60, 1))
             else:
-                self.textManager.updateTimer(round(self.obstacleManager.hardmodeTimer/60, 1))
-        if self.laserCannonManager.fired:
-            self.endGame()
-            self.textManager.updateTimer(10)
-        if True:#self.liveManager.connected:
-            self.liveManager.update()
-            nextEvent = self.liveManager.getNextEvent()
-            if nextEvent:
-                self.handleNextEvent(nextEvent)
+                self.textManager.updateTimer(round(self.hardTimer/60, 1))
         
+        if self.laserHitbox.hit(self.playerManager.player):
+            print("INTERCEPTION!!!!")
+
 
     def handleNextEvent(self, event):
         if isinstance(event, FollowEvent):
@@ -81,8 +100,11 @@ class Game:
         self.playerManager.reset()
         self.obstacleManager.reset()
         self.particleSystemManager.reset()
-        if not self.obstacleManager.hardmode:
-            self.liveManager.reset()
+        self.liveManager.reset()
+        self.progressBarManager.resetLikes()
+        self.likeTimer = self.LIKE_DURATION
+        if self.hardMode:
+            self.obstacleManager.run = True
 
         
     def increaseScore(self):
@@ -91,17 +113,23 @@ class Game:
 
     def handleGiftEvent(self, event):
         print("Gift Event")
-        text = f"{event.user} donated {event.diamonds} diamonds!"
-        self.textManager.addTempLabel(text, 8)
+
         if event.diamonds == self.CANNON_DIAMOND_AMOUNT:
             self.laserCannonManager.start_laser()
             text = f"{event.user} Fired The Laser Cannon!"
-            self.textManager.addTempLabel(text, 4)
+            self.textManager.addTempLabel(text, 8, color=(255, 0, 0, 255))
         elif event.diamonds == self.HARDMODE_DIAMOND_AMOUNT:
-            self.liveManager.setHideProgressBarTimer(self.HARDMODE_DURATION)
+            self.hardMode = True
+            self.progressBarManager.showHardBar = True
+            self.progressBarManager.showLikeBar = False
+            self.obstacleManager.setDifficulty(4)
+            self.hardTimer = self.HARDMODE_DURATION
             text = f"{event.user} Has Activated Hardmode!"
-            self.textManager.addTempLabel(text, -9, 5, (255, 0, 0, 255))
-            self.obstacleManager.activateHardmode(self.HARDMODE_DURATION)
+            self.textManager.addTempLabel(text, 8, color=(255, 0, 0, 255))
+        else:
+            text = f"{event.user} donated {event.diamonds} diamonds!"
+            self.textManager.addTempLabel(text, 8)
+
 
 
     def handleFollowEvent(self, event):
@@ -134,7 +162,29 @@ class Game:
 
         text = f"Difficulty: {difficulty}"
         if not self.gameOver:
-            if self.liveManager.showProgressBar:
-                self.liveManager.setHideProgressBarTimer(120)
-                self.textManager.addTempLabel(text, -9, color=textColor)
+            self.progressBarManager.hideLikeBar(120)
+            self.textManager.addTempLabel(text, -9, color=textColor)
             self.obstacleManager.setDifficulty(difficultyLevel)
+    
+
+    def individualLike(self):
+        self.progressBarManager.likeBar.increment(1)
+        print("LIke")
+    
+    def updateLikeCycle(self):
+        if not self.hardMode:
+            self.likeTimer -= 1
+            if self.likeTimer <= 0:
+                self.likeTimer = self.LIKE_DURATION
+                self.liveManager.finishCycle()
+                self.progressBarManager.resetLikes()
+
+    def updateHardCycle(self):
+        if self.hardMode:
+            self.hardTimer -= 1
+            self.progressBarManager.hardBar.setAmount(self.hardTimer / 60)
+            if self.hardTimer <= 0:
+                self.hardTimer = self.HARDMODE_DURATION
+                self.hardMode = False
+                self.progressBarManager.showHardBar = False
+                self.progressBarManager.showLikeBar = True
