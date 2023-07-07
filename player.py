@@ -10,23 +10,19 @@ class Player(Mover):
         self.currentRotation = 0
         self.rotationIncrement = 0
 
-    def draw(self):
-        super().draw()
-        #circle = pyglet.shapes.Circle(self.x, self.y, self.radius, color=(255, 0, 0, 50))
-        #circle.draw()
-
     def move(self, x, y, direction):
-        super().move(x,y)
-        self.currentRotation = direction * self.rotationAmount
-        
-        if self.sprite.rotation < self.currentRotation:
-            self.rotationIncrement += 1
-        elif self.sprite.rotation > self.currentRotation:
-            self.rotationIncrement -= 1
-        self.sprite.rotation = self.rotationIncrement
+        if not self.dead:
+            super().move(x,y)
+            self.currentRotation = direction * self.rotationAmount
+            
+            if self.sprite.rotation < self.currentRotation:
+                self.rotationIncrement += 1
+            elif self.sprite.rotation > self.currentRotation:
+                self.rotationIncrement -= 1
+            self.sprite.rotation = self.rotationIncrement
 
 
     def reset(self, x, y):
-        self.dead = False
         self.x = x
         self.y = y
+        self.dead = False

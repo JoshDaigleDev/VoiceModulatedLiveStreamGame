@@ -20,7 +20,7 @@ class GameEventDispatcher(pyglet.event.EventDispatcher):
             collision = True
 
         if not collision:
-            for obstacle in self.obstacleManager.obstacles:
+            for obstacle in self.obstacleManager.obstacles + self.obstacleManager.boundaries:
                 nearX = max(obstacle.left, min(playerX, obstacle.right))
                 nearY = max(obstacle.bottom, min(playerY, obstacle.top))
 

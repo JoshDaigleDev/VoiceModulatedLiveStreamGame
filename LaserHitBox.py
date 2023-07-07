@@ -7,8 +7,6 @@ class LaserHitBox:
         self.targetY = 0
         self.value = 0
         self.increment = 0.01
-        self.drawDummy = False
-
         self.x = x
         self.topY = y + self.dim.unit / 2
         self.botY = y - self.dim.unit / 2
@@ -29,20 +27,7 @@ class LaserHitBox:
         
         if fired:
             self.active = True
-            print("PEWPEW")
 
-    
-    def draw(self):
-        if self.drawDummy:
-            color = (255, 255, 255, 255)
-            if self.active:
-                color = (255, 0, 0, 255)
-            dummy = pyglet.shapes.Circle(x=self.targetX, y=self.targetY, radius=10, color=(255,0,0))
-            dummy.draw()
-            line1 = pyglet.shapes.Line(self.x, self.topY, self.targetX, self.targetY, color=color)
-            line1.draw()
-            line2 = pyglet.shapes.Line(self.x, self.botY, self.targetX, self.targetY, color=color)
-            line2.draw()
     
     def intersectLine(self, player, x1, y1, x2, y2):
         playerX = player.x
@@ -56,7 +41,6 @@ class LaserHitBox:
         closestPoint = (x1 + projection * lineVector[0],
                         y1 + projection * lineVector[1])
         distance = math.sqrt((playerX - closestPoint[0]) ** 2 + (playerY - closestPoint[1]) ** 2)
-        print(distance)
         return distance <= radius
     
     def hit(self, player):

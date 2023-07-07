@@ -3,8 +3,10 @@ from Mover import Mover
 
 class LandscapeMoverGroup:
 
-    def __init__(self, dim, imgWidth, speed, positionX, positionY):
+    def __init__(self, dim, batch, group, imgWidth, speed, positionX, positionY):
         self.dim = dim
+        self.batch = batch
+        self.group = group
         self.movers = []
         self.moverWidth = imgWidth
         self.moverOriginX = positionX
@@ -16,13 +18,9 @@ class LandscapeMoverGroup:
         moverSpacingX = len(self.movers) * self.moverWidth + 1
         moverX = self.moverOriginX + moverSpacingX
         moverY = self.positionY
-        moverSprite = pyglet.sprite.Sprite(img=moverImage, x=moverSpacingX, y=moverY)
+        moverSprite = pyglet.sprite.Sprite(img=moverImage, x=moverSpacingX, y=moverY, batch=self.batch, group=self.group)
         mover = Mover(moverX, moverY, moverSprite)
         self.movers.append(mover)
-    
-    def draw(self): 
-        for mover in self.movers:
-            mover.draw()
     
     def update(self, modifier=1): 
         for mover in self.movers:

@@ -2,30 +2,22 @@ import pyglet
 from pyglet import font
 class TextManager():
     
-    def __init__(self, dim):
+    def __init__(self, dim, rendering):
         self.dim = dim
+        self.batch = rendering[0]
+        self.ordering = rendering[1]
         self.tempLabels = []
         font.add_file('./assets/Perfect DOS VGA 437 Win.ttf')
         self.eightBitFont = font.load('Perfect DOS VGA 437 Win', 64)
         self.initCoordinates()
         self.initLabels()
+        self.initShapes()
 
-    def draw(self):
+    def initShapes(self):
+        unit = self.dim.unit
+        self.cannonBG = pyglet.shapes.Rectangle(self.laserChargeX-0.5*unit, self.laserChargeY-0.5*unit, 9*unit, 1.5*unit, color=(0,0,0,255), batch=self.batch, group=self.ordering[8])
+        self.difficultyBG = pyglet.shapes.Rectangle(self.difficultyX-0.5*unit, self.difficultyY-0.5*unit, 10*unit, 1.5*unit, color=(0,0,0,255), batch=self.batch, group=self.ordering[8])
 
-        unit, w, h = self.dim.getDimensions()
-        cannonBG = pyglet.shapes.Rectangle(self.laserChargeX-0.5*unit, self.laserChargeY-0.5*unit, 9*unit, 1.5*unit, color=(0,0,0,255))
-        cannonBG.draw()
-
-        difficultyBG = pyglet.shapes.Rectangle(self.difficultyX-0.5*unit, self.difficultyY-0.5*unit, 10*unit, 1.5*unit, color=(0,0,0,255))
-        difficultyBG.draw()
-
-        self.laserChargeLabel.draw()
-        self.timerLabel.draw()
-        self.difficultyLabel.draw()
-        self.diamondEmojiDifficulty.draw()
-        self.diamondEmojiCannon.draw()
-        for label, _ in self.tempLabels:
-            label.draw()
 
     def drawScoreLabel(self):
         self.scoreLabel.draw()
@@ -34,8 +26,6 @@ class TextManager():
         unit = self.dim.unit
         backDropX = -7*unit
         backDropY = -2*unit
-        backDropW = 14*unit
-        backDropH = 5*unit
 
         backDropImage = pyglet.image.load("./Assets/GameOverBG.png")
         backDropImage.anchor_x = 0
@@ -84,6 +74,16 @@ class TextManager():
         self.timerX = -17*unit
         self.timerY = -9*unit
     
+    def draw(self):
+        self.laserChargeLabel.draw()
+        self.timerLabel.draw()
+        self.difficultyLabel.draw()
+        self.diamondEmojiDifficulty.draw()
+        self.diamondEmojiCannon.draw()
+        for label, _ in self.tempLabels:
+            label.draw()
+    
+
     def addTempLabel(self, text, positionUnits, duration=2, color=(255,255,255,255)):
         positionY = positionUnits*self.dim.unit
         label = pyglet.text.Label(

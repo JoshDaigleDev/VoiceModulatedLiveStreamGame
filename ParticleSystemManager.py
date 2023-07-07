@@ -5,8 +5,10 @@ from ParticleSystem import LaserSystem
 
 class ParticleSystemManager:
 
-    def __init__(self, dim, player, obstacleManager):
+    def __init__(self, dim, rendering, player, obstacleManager):
         self.dim = dim
+        self.batch = rendering[0]
+        self.ordering = rendering[1]
         self.player = player
         self.obstacleManager = obstacleManager
         self.particleSystems = []
@@ -18,17 +20,6 @@ class ParticleSystemManager:
         self.stop = False
         self.currentRotation = 0 
         self.lasers = LaserSystem()
-
-    def draw(self):
-        for particleSystem in self.particleSystems:
-            if particleSystem.size == 10 and not self.stop:
-                particleSystem.draw()
-
-        for particleSystem in self.particleSystems:
-            if particleSystem.size != 10:
-                particleSystem.draw()
-        
-        self.lasers.draw()
         
     def update(self, dt):
         for particleSystem in self.particleSystems:
@@ -61,14 +52,14 @@ class ParticleSystemManager:
     def initPlayerExplosion(self, image):
         self.stop = True
         imageSeq = pyglet.image.ImageGrid(image, 12, 12)
-        playerExplosionSystem = ParticleSystem(self.player.x, self.player.y, 144, 600, 6, imageSeq, self.playerExplosionInitialVelocity, True, True)
+        playerExplosionSystem = ParticleSystem(self.batch, self.ordering[9], self.player.x, self.player.y, 144, 600, 6, imageSeq, self.playerExplosionInitialVelocity, True, True)
         self.particleSystems.append(playerExplosionSystem)
         for system in self.particleSystems:
             if system.bounce:
                 system.external_force = self.standardGravity
     
     def initPlayerTrailNote(self):
-        playerTrailNoteSystem = ParticleSystem(self.player.x, self.player.y, 1, 180, 25, self.playerTrailImg, self.playerTrailNoteInitialVelocity, False, True)
+        playerTrailNoteSystem = ParticleSystem(self.batch, self.ordering[9], self.player.x, self.player.y, 1, 180, 25, self.playerTrailImg, self.playerTrailNoteInitialVelocity, False, True)
         self.particleSystems.append(playerTrailNoteSystem)
 
     def initPlayerTrailSheet(self):
@@ -76,7 +67,7 @@ class ParticleSystemManager:
             self.currentRotation += 2
         elif self.currentRotation > self.player.currentRotation:
             self.currentRotation -= 2
-        playerTrailSheetSystem = ParticleSystem(self.player.x, self.player.y, 1, 180, 10, self.SheetMusic, self.playerTrailSheetInitialVelocity, False, False, angle=self.currentRotation)
+        playerTrailSheetSystem = ParticleSystem(self.batch, self.ordering[8], self.player.x, self.player.y, 1, 180, 10, self.SheetMusic, self.playerTrailSheetInitialVelocity, False, False, angle=self.currentRotation)
         #print(self.player.currentRotation)
         self.particleSystems.append(playerTrailSheetSystem)
 
@@ -135,7 +126,7 @@ class ParticleSystemManager:
                         particle.yVelocity -= gravity
                         particle.xVelocity *= airDrag
                         particle.yVelocity *= airDrag
-                        for obstacle in self.obstacleManager.obstacles:
+                        for obstacle in self.obstacleManager.obstacles + self.obstacleManager.boundaries:
                             if obstacle.contains(particle.x, particle.y, particle.radius):
                                 topObstacle = False
                                 if obstacle.top == self.dim.h:

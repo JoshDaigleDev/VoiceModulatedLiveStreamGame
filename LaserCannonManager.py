@@ -3,8 +3,10 @@ import math
 from LaserProjectile import LaserProjectile
 class LaserCannonManager:
 
-    def __init__(self, dim, playerManager, particleSystemManager, laserHitbox):
+    def __init__(self, dim, rendering, playerManager, particleSystemManager, laserHitbox):
         self.dim = dim
+        self.batch = rendering[0]
+        self.ordering = rendering[1]
         self.playerManager = playerManager
         self.particleSystemManager = particleSystemManager
         self.laserHitbox = laserHitbox
@@ -75,22 +77,6 @@ class LaserCannonManager:
         diffX = targetX - self.laserBarrelSprite.x
         diffY = targetY - self.laserBarrelSprite.y
         return -math.degrees(math.atan2(diffY, diffX))
-    
-    def draw(self):
-        self.draw_laser_cannon()
-        if False:
-            circle = pyglet.shapes.Circle(self.anchorX, self.anchorY, 25, color=(0, 255, 0, 100))
-            circle.draw()
-            line = pyglet.shapes.Line(x=self.anchorX, y=self.anchorY, x2=0, y2=0, width=12, color=(100,255,100, 100))
-            line.draw()
-
-
-
-    def draw_laser_cannon(self):
-        self.laserPlatformSprite.draw()
-        self.laserCharge.draw()
-        self.laserBarrelSprite.draw()
-        self.laserBaseSprite.draw()
 
     def load_assets(self):
         unit, w, h = self.dim.getDimensions()
@@ -116,10 +102,10 @@ class LaserCannonManager:
     def init_sprites(self):
         unit, w, h = self.dim.getDimensions()
 
-        self.laserBarrelSprite = pyglet.sprite.Sprite(img=self.laserBarrelImage, x=self.anchorX, y=self.anchorY)
-        self.laserBaseSprite = pyglet.sprite.Sprite(img=self.laserBaseImage, x=self.anchorX, y=self.anchorY)
-        self.laserPlatformSprite = pyglet.sprite.Sprite(img=self.laserPlatformImage, x=-self.dim.w - 0.02*self.dim.unit, y=-5.7*self.dim.unit)
-        self.laserCharge = pyglet.shapes.Rectangle(x=self.anchorX, y=self.anchorY, width=self.laserWidth, height=self.laserWidth/8, color=(255,0,0))
+        self.laserBarrelSprite = pyglet.sprite.Sprite(img=self.laserBarrelImage, x=self.anchorX, y=self.anchorY, batch=self.batch, group=self.ordering[6])
+        self.laserBaseSprite = pyglet.sprite.Sprite(img=self.laserBaseImage, x=self.anchorX, y=self.anchorY, batch=self.batch, group=self.ordering[7])
+        self.laserPlatformSprite = pyglet.sprite.Sprite(img=self.laserPlatformImage, x=-self.dim.w - 0.02*self.dim.unit, y=-5.7*self.dim.unit, batch=self.batch, group=self.ordering[6])
+        self.laserCharge = pyglet.shapes.Rectangle(x=self.anchorX, y=self.anchorY, width=self.laserWidth, height=self.laserWidth/8, color=(255,0,0), batch=self.batch, group=self.ordering[5])
         
         self.laserCharge.anchor_x = int(-2.1*unit)
         self.laserCharge.anchor_y = int(self.laserCharge.height/2)
@@ -147,7 +133,7 @@ class LaserCannonManager:
 
     
     def fire_laser(self):
-        laser = LaserProjectile(self.laserBarrelSprite.x, self.laserBarrelSprite.y, self.laserWidth*10, self.laserWidth/8, self.getAngleToTarget(self.laserHitbox.targetX, self.laserHitbox.targetY))
+        laser = LaserProjectile(self.batch, self.ordering[5], self.laserBarrelSprite.x, self.laserBarrelSprite.y, self.laserWidth*10, self.laserWidth/8, self.getAngleToTarget(self.laserHitbox.targetX, self.laserHitbox.targetY))
         self.particleSystemManager.fire_laser(laser)
         self.play_sound(self.laserFireAudio)
 

@@ -3,10 +3,12 @@ from Obstacle import Obstacle
 import random
 
 class ObstacleManager:
-    def __init__(self, dim):
+    def __init__(self, dim, rendering):
         self.dim = dim
+        self.rendering = rendering
         self.obstacles = []
-        self.obstacleSpeed = 300
+        self.boundaries = []
+        self.obstacleSpeed = dim.unit / 25
         
         self.generate_boundaries()
 
@@ -25,18 +27,16 @@ class ObstacleManager:
 
         self.hardmode = False
 
-    def draw(self):
-        for obstacle in reversed(self.obstacles):
-            obstacle.draw()
     
-    def update(self, dt, hardMode):
+    def update(self, hardMode):
         self.hardmode = hardMode
         if self.run: 
             for obstacle in self.obstacles:
                 if not obstacle.boundary:
-                    obstacle.update(-self.obstacleSpeed * dt, 0)
+                    obstacle.update(-self.obstacleSpeed, 0)
                     if obstacle.x + obstacle.width < -self.dim.w:
                         self.obstacles.remove(obstacle)
+                        obstacle.sprite.delete()
             
             self.generationTime += 1
             if len(self.obstacles) == 0 or self.generationTime >= self.generationTimeMax:
@@ -96,20 +96,22 @@ class ObstacleManager:
             #SPRITES 
             topSprite = None
             bottomSprite = None
+            batch = self.rendering[0]
+            ordering = self.rendering[1]
 
             #TOP INIT AND SCALING 
-            topSprite = pyglet.sprite.Sprite(x=obstacleX, y=topObstacleY, img=topImage)
+            topSprite = pyglet.sprite.Sprite(x=obstacleX, y=topObstacleY, img=topImage, batch=batch, group=ordering[6])
             topSprite.scale_y = obstacleHeight/topSprite.height
             topSprite.scale_x = obstacleWidth/topSprite.width
 
             #BOTTOM INIT AND SCALING 
-            bottomSprite = pyglet.sprite.Sprite(x=obstacleX, y=bottomObstacleY, img=bottomImage)
+            bottomSprite = pyglet.sprite.Sprite(x=obstacleX, y=bottomObstacleY, img=bottomImage, batch=batch, group=ordering[6])
             bottomSprite.scale_y = obstacleHeight/bottomSprite.height
             bottomSprite.scale_x = obstacleWidth/bottomSprite.width
 
             #OBSTACLE OBJECTS 
-            topObstacle = Obstacle(obstacleX, topObstacleY, obstacleWidth, obstacleHeight, top=True, sprite=topSprite, boundary=False)
-            bottomObstacle = Obstacle(obstacleX, bottomObstacleY, obstacleWidth, obstacleHeight, sprite=bottomSprite, boundary=False)
+            topObstacle = Obstacle(self.dim, obstacleX, topObstacleY, obstacleWidth, obstacleHeight, top=True, sprite=topSprite, boundary=False)
+            bottomObstacle = Obstacle(self.dim, obstacleX, bottomObstacleY, obstacleWidth, obstacleHeight, sprite=bottomSprite, boundary=False)
 
             self.obstacles.append(topObstacle)
             self.obstacles.append(bottomObstacle)
@@ -131,12 +133,12 @@ class ObstacleManager:
         bottomBoundaryY = bottom 
         topBoundaryY = top - boundarySize
 
-        topBoundary = Obstacle(-self.dim.w, topBoundaryY, 2 * self.dim.w, boundarySize, top=True, boundary=True)
-        bottomBoundary = Obstacle(-self.dim.w, bottomBoundaryY, 2 * self.dim.w, boundarySize, boundary=True)
+        topBoundary = Obstacle(self.dim, -self.dim.w, topBoundaryY, 2 * self.dim.w, boundarySize, rendering=self.rendering, top=True, boundary=True)
+        bottomBoundary = Obstacle(self.dim, -self.dim.w, bottomBoundaryY, 2 * self.dim.w, boundarySize, rendering=self.rendering, boundary=True)
 
         topBoundary.passed = True
         bottomBoundary.passed = True
 
-        self.obstacles.append(topBoundary)
-        self.obstacles.append(bottomBoundary)
+        self.boundaries.append(topBoundary)
+        self.boundaries.append(bottomBoundary)
     

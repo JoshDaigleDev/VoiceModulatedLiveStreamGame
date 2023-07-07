@@ -1,7 +1,9 @@
 from Particle import Particle
 import pyglet
 class ParticleSystem:
-    def __init__(self, x, y, num, lifeSpan, size, image, veloctity_generation, externalForce, bounce, angle=None):
+    def __init__(self, batch, ordering, x, y, num, lifeSpan, size, image, veloctity_generation, externalForce, bounce, angle=None):
+        self.batch = batch
+        self.ordering = ordering
         self.originX = x
         self.originY = y
         self.particles = []
@@ -18,7 +20,6 @@ class ParticleSystem:
         self.angle = angle
         self.init()
 
-
     def init(self):
         for i in range(0, self.particleNum):
             xVelocity, yVelocity = self.velocity_generation()
@@ -26,26 +27,21 @@ class ParticleSystem:
                 imageFragment = self.image[i]
                 imageFragment.anchor_x = imageFragment.width // 2 
                 imageFragment.anchor_y = imageFragment.height // 2 
-                sprite = pyglet.sprite.Sprite(img=imageFragment, x=self.originX, y=self.originY)
-                #sprite.scale = (2 * self.size ) / sprite.width
+                sprite = pyglet.sprite.Sprite(img=imageFragment, x=self.originX, y=self.originY, batch=self.batch, group=self.ordering)
             else:
-                sprite = pyglet.sprite.Sprite(img=self.image, x=self.originX, y=self.originY)
+                sprite = pyglet.sprite.Sprite(img=self.image, x=self.originX, y=self.originY, batch=self.batch, group=self.ordering)
 
-                #sprite.scale = self.size / sprite.width
             if self.angle:
                 sprite.rotation = self.angle
             particle = Particle(self.originX, self.originY, self.lifeSpan, sprite, self.size, self.bounce, xVelocity, yVelocity, self.angle)
             self.particles.append(particle)
-
-    def draw(self):
-        for particle in self.particles:
-            particle.draw()
     
     def update(self):
         for particle in self.particles:
             particle.update()
             if particle.isDead():
                 self.particles.remove(particle)
+                particle.sprite.delete()
     
     def isFinished(self):
         finished = True
@@ -61,16 +57,12 @@ class LaserSystem:
 
     def add(self, laser):
         self.lasers.append(laser)
-
-    def draw(self):
-        for laser in self.lasers:
-            if not laser.dead:
-                laser.draw()
     
     def update(self):
         for laser in self.lasers:
             laser.update()
             if laser.dead:
                 self.lasers.remove(laser)
+                laser.rect.delete()
             
         

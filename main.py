@@ -28,11 +28,27 @@ pyglet.gl.glClearColor(115/255, 191/255, 230/255, 1)
 mediaPlayer = pyglet.media.Player()
 breakAudio = pyglet.media.load('./Assets/PlayerBreak.mp3')
 
-game = Game(dim)
+batch = pyglet.graphics.Batch()
+order0 = pyglet.graphics.Group(order=0)
+order1 = pyglet.graphics.Group(order=1)
+order2 = pyglet.graphics.Group(order=2)
+order3 = pyglet.graphics.Group(order=3)
+order4 = pyglet.graphics.Group(order=4)
+order5 = pyglet.graphics.Group(order=5)
+order6 = pyglet.graphics.Group(order=6)
+order7 = pyglet.graphics.Group(order=7)
+order8 = pyglet.graphics.Group(order=8)
+order9 = pyglet.graphics.Group(order=9)
+orderings = (order0, order1, order2, order3, order4, order5, order6, order7, order8, order9)
+rendering = (batch, orderings)
+
+
+game = Game(dim, rendering)
 gameEvents = GameEventDispatcher(game)
 
 GameEventDispatcher.register_event_type('on_collision')
 GameEventDispatcher.register_event_type('on_score')
+
 
 moveUp = False
 moveDown = False
@@ -163,6 +179,7 @@ def on_close():
 #MAIN UPDATE LOOP 
 def update(dt):
     global paused
+    global dim
 
     if not paused:
         #GAME UPDATES 
@@ -176,9 +193,9 @@ def update(dt):
         global moveDown
         if moveUp or moveDown:
             if moveUp:
-                game.playerManager.movePlayer(150*dt, -1)
+                game.playerManager.movePlayer(dim.unit / 20, -1)
             elif moveDown:
-                game.playerManager.movePlayer(-150*dt, 1)
+                game.playerManager.movePlayer(-dim.unit / 20, 1)
         else:
             game.playerManager.movePlayer(audioSource.movement*dt, audioSource.direction)
 

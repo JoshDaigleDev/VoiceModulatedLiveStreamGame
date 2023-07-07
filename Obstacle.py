@@ -2,8 +2,9 @@ import pyglet
 from Mover import Mover
 
 class Obstacle(Mover):
-    def __init__(self, x, y, width, height, top=False, sprite=None, boundary=False):
+    def __init__(self, dim, x, y, width, height, rendering=None, top=False, sprite=None, boundary=False):
         super().__init__(x,y)
+        self.dim = dim
         self.width = width
         self.height = height
 
@@ -20,7 +21,10 @@ class Obstacle(Mover):
         self.bottom = y
         self.isTop = top
 
-        self.rectangle = pyglet.shapes.Rectangle(self.x, self.y, self.width, self.height, color=(0, 0, 0))
+        if boundary:
+            batch = rendering[0]
+            ordering = rendering[1]
+            self.rectangle = pyglet.shapes.Rectangle(self.x, self.y, self.width, self.height, color=(0, 0, 0), batch=batch, group=ordering[7])
 
     def contains(self, x, y, radius):
         x_distance = abs(x - (self.left + self.width / 2))
@@ -30,17 +34,6 @@ class Obstacle(Mover):
             return True
         return False
 
-    def draw(self):
-        """
-             if not self.boundary and self.passed:
-            if self.alpha >= 0:
-                self.alpha -= 2
-            self.rectangle.color = (0,0,0, self.alpha)   
-        """
-        if self.sprite:
-            self.sprite.draw()
-        else:
-            self.rectangle.draw()        
 
     def update(self, dx, dy):
         self.move(dx, dy)
@@ -49,11 +42,16 @@ class Obstacle(Mover):
                 self.move(0, self.height/120)
             else: 
                 self.move(0, -self.height/120)
+            
+            #if self.y > self.dim.h or self.y < self.dim.w - self.dim.unit*7:
+                #self.sprite.delete()
         
-        self.sprite.update(self.x, self.y)
+        if self.boundary:
+            self.rectangle.x = self.x
+            self.rectangle.y = self.y
+        else:
+            self.sprite.update(self.x, self.y)
 
-        self.rectangle.x = self.x
-        self.rectangle.y = self.y
         self.left = self.x
         self.right = self.x + self.width
         self.top = self.y + self.height

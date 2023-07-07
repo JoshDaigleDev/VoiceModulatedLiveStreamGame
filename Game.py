@@ -12,18 +12,19 @@ from GameScoreManager import GameScoreManager
 from EventHelpers import FollowEvent, GiftEvent, LikeEvent
 class Game:
 
-    def __init__(self, dim):
+    def __init__(self, dim, rendering):
         self.dim = dim
-        self.playerManager = PlayerManager(self.dim)
-        self.obstacleManager = ObstacleManager(self.dim)
+        self.rendering = rendering
+        self.playerManager = PlayerManager(self.dim, self.rendering) #
+        self.obstacleManager = ObstacleManager(self.dim, self.rendering) #
         self.laserAnchorX = -17*dim.unit
         self.laserAnchorY = -2*dim.unit
-        self.laserHitbox = LaserHitBox(self.dim, self.laserAnchorX, self.laserAnchorY)
-        self.particleSystemManager = ParticleSystemManager(self.dim, self.playerManager.player, self.obstacleManager)
-        self.textManager = TextManager(self.dim)
-        self.laserCannonManager = LaserCannonManager(self.dim, self.playerManager, self.particleSystemManager, self.laserHitbox)
-        self.landscapeManager = LandscapeManager(self.dim)
-        self.progressBarManager = ProgressBarManager(self.dim)
+        self.laserHitbox = LaserHitBox(self.dim, self.laserAnchorX, self.laserAnchorY) # 
+        self.particleSystemManager = ParticleSystemManager(self.dim, self.rendering, self.playerManager.player, self.obstacleManager)
+        self.textManager = TextManager(self.dim, self.rendering) #?
+        self.laserCannonManager = LaserCannonManager(self.dim, self.rendering, self.playerManager, self.particleSystemManager, self.laserHitbox) #
+        self.landscapeManager = LandscapeManager(self.dim, self.rendering)
+        self.progressBarManager = ProgressBarManager(self.dim) #?
         self.gameScoreManager = GameScoreManager()
         self.textManager.updateHighScore(self.gameScoreManager.highScore)
         self.gameOver = False
@@ -43,23 +44,13 @@ class Game:
 
 
     def draw(self):
-        self.landscapeManager.draw()
-
-        self.obstacleManager.draw()
+        self.rendering[0].draw()
         self.textManager.draw()
         self.progressBarManager.draw()
-        self.laserHitbox.draw()
         if self.gameOver:
             self.textManager.drawPlayAgain()
-            self.landscapeManager.updateClouds(0.2)
         else:
             self.textManager.drawScoreLabel()
-
-        self.particleSystemManager.draw()
-        self.laserCannonManager.draw()
-
-        if not self.gameOver:
-            self.playerManager.draw()
 
     def update(self, dt):
         self.particleSystemManager.update(dt)
@@ -73,7 +64,7 @@ class Game:
         
         if not self.gameOver:
             self.landscapeManager.update()
-            self.obstacleManager.update(dt, self.hardMode)
+            self.obstacleManager.update(self.hardMode)
             self.updateHardCycle()
             self.updateLikeCycle()
             self.progressBarManager.update()
@@ -81,7 +72,9 @@ class Game:
                 self.textManager.updateTimer(round(self.likeTimer/60, 1))
             else:
                 self.textManager.updateTimer(round(self.hardTimer/60, 1))
-        
+        else:
+            self.landscapeManager.updateClouds(0.2)
+            
         if self.laserHitbox.hit(self.playerManager.player):
             print("INTERCEPTION!!!!")
 
@@ -97,6 +90,8 @@ class Game:
     def endGame(self):
         if not self.gameOver:
             self.particleSystemManager.initPlayerExplosion(self.playerManager.playerImage)
+            if not self.playerManager.player.dead:
+                self.playerManager.destruct()
         self.gameOver = True
 
     def startLaser(self):
