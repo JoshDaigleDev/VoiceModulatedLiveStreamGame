@@ -24,9 +24,9 @@ class LandscapeMoverGroup:
         for mover in self.movers:
             mover.draw()
     
-    def update(self): 
+    def update(self, modifier=1): 
         for mover in self.movers:
-            mover.move(self.moverSpeed, 0)
+            mover.move(self.moverSpeed * modifier, 0)
 
             if mover.x + self.moverWidth < -self.dim.w:
                 furthestMover = max(self.movers, key=lambda mover: mover.x)

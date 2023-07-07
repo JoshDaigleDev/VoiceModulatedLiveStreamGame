@@ -14,7 +14,8 @@ class ProgressBar:
         self.blue = (0, 255, 255)
         self.color = self.red
         self.bar = pyglet.shapes.Rectangle(x=x, y=y, width=self.width, height=dim.unit, color=self.color)
-        self.barOutline = pyglet.shapes.Rectangle(x=x-dim.unit/5, y=y-dim.unit/5, width=self.width + 2/5*dim.unit, height=dim.unit + 2/5*dim.unit, color=(255, 255, 255))
+        self.barBG = pyglet.shapes.Rectangle(x=x, y=y, width=self.width, height=dim.unit, color=(255, 255, 255))
+        self.barOutline = pyglet.shapes.Rectangle(x=x-dim.unit/5, y=y-dim.unit/5, width=self.width + 2/5*dim.unit, height=dim.unit + 2/5*dim.unit, color=(237, 10, 187))
         self.hard = hard
         if self.hard:
             self.bar.scale_x = -1
@@ -50,4 +51,5 @@ class ProgressBar:
     def draw(self):
         self.bar.width = self.width * (self.progress / self.maxProgress)
         self.barOutline.draw()
+        self.barBG.draw()
         self.bar.draw()

@@ -25,6 +25,9 @@ window = pyglet.window.Window(1920, 1080)
 projection = Mat4.orthogonal_projection(-dim.w, dim.w, -dim.h, dim.h, z_near=-unit, z_far=unit)
 pyglet.gl.glClearColor(115/255, 191/255, 230/255, 1)
 
+mediaPlayer = pyglet.media.Player()
+breakAudio = pyglet.media.load('./Assets/PlayerBreak.mp3')
+
 game = Game(dim)
 gameEvents = GameEventDispatcher(game)
 
@@ -67,6 +70,13 @@ def on_tiktok_gift(data):
 #GAME EVENTS
 @gameEvents.event
 def on_collision():
+    global mediaPlayer
+    global breakAudio
+    mediaPlayer.queue(breakAudio)
+    if mediaPlayer.playing:
+        mediaPlayer.next_source()
+    mediaPlayer.play()
+    
     game.endGame()   
 
 @gameEvents.event
@@ -87,7 +97,7 @@ def on_key_press(symbol, modifiers):
     global paused
 
     #space 
-    if symbol == 32:
+    if symbol == 65293:
         game.reset()
     
     #up
@@ -120,7 +130,7 @@ def on_key_press(symbol, modifiers):
         game.liveManager.handleGift(fakeGift)
     
     #p
-    elif symbol == 112:
+    elif symbol == 32:
         paused = not paused
       
     #d

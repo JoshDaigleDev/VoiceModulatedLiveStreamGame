@@ -7,6 +7,7 @@ from LandscapeManager import LandscapeManager
 from LiveManager import LiveManager
 from ProgressBarManager import ProgressBarManager
 from LaserHitBox import LaserHitBox
+from GameScoreManager import GameScoreManager
 
 from EventHelpers import FollowEvent, GiftEvent, LikeEvent
 class Game:
@@ -23,8 +24,9 @@ class Game:
         self.laserCannonManager = LaserCannonManager(self.dim, self.playerManager, self.particleSystemManager, self.laserHitbox)
         self.landscapeManager = LandscapeManager(self.dim)
         self.progressBarManager = ProgressBarManager(self.dim)
+        self.gameScoreManager = GameScoreManager()
+        self.textManager.updateHighScore(self.gameScoreManager.highScore)
         self.gameOver = False
-        self.gameScore = 0
         self.CANNON_DIAMOND_AMOUNT = 199
         self.HARDMODE_DIAMOND_AMOUNT = 1000
         self.HARDMODE_DURATION = 30 * 60
@@ -37,23 +39,30 @@ class Game:
         self.progressBarManager.initLikeBar(self.LIKE_GOAL)
         self.progressBarManager.initHardBar(self.HARDMODE_DURATION / 60)
         self.hardMode = False
+        self.obstacleManager.setDifficulty(2)
 
 
     def draw(self):
         self.landscapeManager.draw()
-        self.particleSystemManager.draw()
+
         self.obstacleManager.draw()
-        self.laserCannonManager.draw()
         self.textManager.draw()
         self.progressBarManager.draw()
+        self.laserHitbox.draw()
+        if self.gameOver:
+            self.textManager.drawPlayAgain()
+            self.landscapeManager.updateClouds(0.2)
+        else:
+            self.textManager.drawScoreLabel()
+
+        self.particleSystemManager.draw()
+        self.laserCannonManager.draw()
+
         if not self.gameOver:
             self.playerManager.draw()
-        self.laserHitbox.draw()
-
 
     def update(self, dt):
         self.particleSystemManager.update(dt)
-        self.textManager.updateScore(self.gameScore)
         self.laserCannonManager.update(self.gameOver)
         self.liveManager.update()
         self.laserHitbox.update(self.particleSystemManager.activeLaser(), self.gameOver)
@@ -89,27 +98,31 @@ class Game:
         if not self.gameOver:
             self.particleSystemManager.initPlayerExplosion(self.playerManager.playerImage)
         self.gameOver = True
-        self.laserCannonManager.reset()
 
     def startLaser(self):
         self.laserCannonManager.start_laser()
 
     def reset(self):
         self.gameOver = False
-        self.gameScore = 0
+        self.gameScoreManager.reset()
         self.playerManager.reset()
         self.obstacleManager.reset()
         self.particleSystemManager.reset()
         self.liveManager.reset()
         self.progressBarManager.resetLikes()
+        self.laserCannonManager.reset()
         self.likeTimer = self.LIKE_DURATION
         if self.hardMode:
             self.obstacleManager.run = True
+        else:
+            self.obstacleManager.setDifficulty(2)
 
         
     def increaseScore(self):
-        self.gameScore += 0.5
-
+        self.gameScoreManager.incrementScore(0.5)
+        self.textManager.updateScore(self.gameScoreManager.score)
+        self.textManager.updateHighScore(self.gameScoreManager.highScore)
+ 
 
     def handleGiftEvent(self, event):
         print("Gift Event")

@@ -16,14 +16,10 @@ class LaserCannonManager:
         self.postChargeMax = 8
         self.maxCharge = 64
         self.postChargeTimeIncrement = 1
-        self.fired = False
         self.reverseCharge = False
         self.postCharging = False
         self.load_assets()
         self.init_sprites()
-        self.laserFuel = 0
-        self.maxFuel = 1000
-
 
     def update(self, gameOver):
         if self.charging:
@@ -153,19 +149,8 @@ class LaserCannonManager:
     def fire_laser(self):
         laser = LaserProjectile(self.laserBarrelSprite.x, self.laserBarrelSprite.y, self.laserWidth*10, self.laserWidth/8, self.getAngleToTarget(self.laserHitbox.targetX, self.laserHitbox.targetY))
         self.particleSystemManager.fire_laser(laser)
-        self.fired = True
         self.play_sound(self.laserFireAudio)
-        self.laserFuel = 0
 
     
-    def fuelLaser(self, diamonds):
-        self.laserFuel = min(self.maxFuel, self.laserFuel + diamonds)
-    
-
-    def canFire(self):
-        return self.laserFuel >= self.maxFuel
-
-
     def reset(self):
-        self.fired = False
-        self.laserFuel = 0
+        self.mediaPlayer.next_source()

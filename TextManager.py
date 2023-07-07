@@ -19,7 +19,6 @@ class TextManager():
         difficultyBG = pyglet.shapes.Rectangle(self.difficultyX-0.5*unit, self.difficultyY-0.5*unit, 10*unit, 1.5*unit, color=(0,0,0,255))
         difficultyBG.draw()
 
-        self.scoreLabel.draw()
         self.laserChargeLabel.draw()
         self.timerLabel.draw()
         self.difficultyLabel.draw()
@@ -28,12 +27,32 @@ class TextManager():
         for label, _ in self.tempLabels:
             label.draw()
 
+    def drawScoreLabel(self):
+        self.scoreLabel.draw()
+
+    def drawPlayAgain(self):
+        unit = self.dim.unit
+        backDropX = -7*unit
+        backDropY = -2*unit
+        backDropW = 14*unit
+        backDropH = 5*unit
+
+        backDropImage = pyglet.image.load("./Assets/GameOverBG.png")
+        backDropImage.anchor_x = 0
+        backDropImage.anchor_y = 0
+        backDropSprite = pyglet.sprite.Sprite(backDropImage, backDropX, backDropY)
+
+        backDropSprite.draw()
+        
+        self.tryAgainLabel.draw()
+
+        self.highScoreLabel.draw()
 
     def updateScore(self, score):
         self.scoreLabel.text = f"{round(score)}"
     
-    #def updateLaserCharge(self, charge):
-        #self.laserChargeLabel.text = f"Diamonds: {charge}/1000"
+    def updateHighScore(self, score):
+        self.highScoreLabel.text = f"High Score: {round(score)}"
     
     def updateTimer(self, time):
         self.timerLabel.text = f"{time}"
@@ -46,6 +65,12 @@ class TextManager():
 
         self.scoreLabelX = 10*unit
         self.scoreLabelY = 0
+
+        self.highScoreLabelX = -4.5*unit
+        self.highScoreLabelY = -0.7*unit
+
+        self.tryAgainLabelX = -4.6*unit
+        self.tryAgainLabelY = 1.3*unit
 
         self.laserChargeX = -19*unit
         self.laserChargeY = 3*unit
@@ -83,6 +108,24 @@ class TextManager():
             font_size=172,
             x=self.scoreLabelX, 
             y=self.scoreLabelY,
+            color=(0, 0, 0, 255)#(237, 10, 187, 255)
+            )
+        
+        self.highScoreLabel = pyglet.text.Label(
+            'High Score: 0',
+            font_name=self.eightBitFont.name,
+            font_size=44,
+            x=self.highScoreLabelX, 
+            y=self.highScoreLabelY,
+            color=(0, 0, 0, 255)#(237, 10, 187, 255)
+            )
+        
+        self.tryAgainLabel = pyglet.text.Label(
+            'Game Over!',
+            font_name=self.eightBitFont.name,
+            font_size=64,
+            x=self.tryAgainLabelX, 
+            y=self.tryAgainLabelY,
             color=(0, 0, 0, 255)#(237, 10, 187, 255)
             )
         

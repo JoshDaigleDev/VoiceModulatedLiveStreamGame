@@ -13,7 +13,7 @@ class LaserHitBox:
         self.topY = y + self.dim.unit / 2
         self.botY = y - self.dim.unit / 2
         self.active = False
-        self.activeTimeLimit = 15
+        self.activeTimeLimit = 2
         self.activeTimer = self.activeTimeLimit
 
     def update(self, fired, gameOver):

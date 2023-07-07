@@ -17,6 +17,10 @@ class LandscapeManager:
         self.midClouds.update()
         self.botClouds.update()
 
+    def updateClouds(self, modifier=1):
+        self.topClouds.update(modifier)
+        self.midClouds.update(modifier)
+        self.botClouds.update(modifier)
     
     def draw(self):
         self.atmosphere.draw()
