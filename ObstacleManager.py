@@ -13,7 +13,7 @@ class ObstacleManager:
         self.generate_boundaries()
 
         self.generationTime = 0
-        self.generationTimeMax = 150
+        self.generationTimeMax = 300
         self.topObstacleImageRed = pyglet.image.load("./assets/ArrowObstacleTopRed.png")
         self.topObstacleImageBlue = pyglet.image.load("./assets/ArrowObstacleTopBlue.png")
         self.topObstacleImageGreen = pyglet.image.load("./assets/ArrowObstacleTopGreen.png")
