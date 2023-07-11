@@ -12,9 +12,10 @@ from GameScoreManager import GameScoreManager
 from EventHelpers import FollowEvent, GiftEvent, LikeEvent
 class Game:
 
-    def __init__(self, dim, rendering):
+    def __init__(self, dim, rendering, options):
         self.dim = dim
         self.rendering = rendering
+        self.options = options
         self.playerManager = PlayerManager(self.dim, self.rendering) #
         self.obstacleManager = ObstacleManager(self.dim, self.rendering) #
         self.laserAnchorX = -17*dim.unit
@@ -31,7 +32,7 @@ class Game:
         self.CANNON_DIAMOND_AMOUNT = 199
         self.HARDMODE_DIAMOND_AMOUNT = 1000
         self.HARDMODE_DURATION = 30 * 60
-        self.LIKE_GOAL = 50
+        self.LIKE_GOAL = self.options.likeGoal
         self.LIKE_DURATION = 10 * 60
         self.EVENT_DURATION = 3
         self.likeTimer = self.LIKE_DURATION
@@ -41,6 +42,9 @@ class Game:
         self.progressBarManager.initHardBar(self.HARDMODE_DURATION / 60)
         self.hardMode = False
         self.obstacleManager.setDifficulty(2)
+        self.resetTime = 2 * 60
+        self.resetTimer = self.resetTime
+
 
 
     def draw(self):
@@ -72,12 +76,13 @@ class Game:
                 self.textManager.updateTimer(round(self.likeTimer/60, 1))
             else:
                 self.textManager.updateTimer(round(self.hardTimer/60, 1))
+                
         else:
-            self.landscapeManager.updateClouds(0.2)
+            self.resetTimer -= 1
+            if self.resetTimer <= 0:
+                self.resetTimer = self.resetTime
+                self.reset()
             
-        if self.laserHitbox.hit(self.playerManager.player):
-            print("INTERCEPTION!!!!")
-
 
     def handleNextEvent(self, event):
         if isinstance(event, FollowEvent):
@@ -86,6 +91,12 @@ class Game:
             self.handleGiftEvent(event)
         if isinstance(event, LikeEvent):
             self.handleLikeEvent(event)
+    
+    def setOptions(self, optionsFile):
+        self.options.load_options(optionsFile)
+        self.LIKE_GOAL = self.options.likeGoal
+        self.progressBarManager.initLikeBar(self.LIKE_GOAL)
+        self.liveManager.likeGoal = self.LIKE_GOAL
 
     def endGame(self):
         if not self.gameOver:
@@ -93,6 +104,7 @@ class Game:
             if not self.playerManager.player.dead:
                 self.playerManager.destruct()
         self.gameOver = True
+        
 
     def startLaser(self):
         self.laserCannonManager.start_laser()

@@ -22,7 +22,6 @@ class LaserHitBox:
             if self.activeTimer <= 0:
                 self.active = False
             else:
-                print(self.activeTimer)
                 self.activeTimer -= 1
         
         if fired:

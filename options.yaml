@@ -1,0 +1,8 @@
+# options.yaml
+
+appName: TikTokLiveProject
+version: 1.0
+likeGoal: 50
+highestPitch: 550
+normalPitch: 290
+lowestPitch: 200

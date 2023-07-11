@@ -102,10 +102,10 @@ class LaserCannonManager:
     def init_sprites(self):
         unit, w, h = self.dim.getDimensions()
 
-        self.laserBarrelSprite = pyglet.sprite.Sprite(img=self.laserBarrelImage, x=self.anchorX, y=self.anchorY, batch=self.batch, group=self.ordering[6])
-        self.laserBaseSprite = pyglet.sprite.Sprite(img=self.laserBaseImage, x=self.anchorX, y=self.anchorY, batch=self.batch, group=self.ordering[7])
-        self.laserPlatformSprite = pyglet.sprite.Sprite(img=self.laserPlatformImage, x=-self.dim.w - 0.02*self.dim.unit, y=-5.7*self.dim.unit, batch=self.batch, group=self.ordering[6])
-        self.laserCharge = pyglet.shapes.Rectangle(x=self.anchorX, y=self.anchorY, width=self.laserWidth, height=self.laserWidth/8, color=(255,0,0), batch=self.batch, group=self.ordering[5])
+        self.laserBarrelSprite = pyglet.sprite.Sprite(img=self.laserBarrelImage, x=self.anchorX, y=self.anchorY, batch=self.batch, group=self.ordering[7])
+        self.laserBaseSprite = pyglet.sprite.Sprite(img=self.laserBaseImage, x=self.anchorX, y=self.anchorY, batch=self.batch, group=self.ordering[8])
+        self.laserPlatformSprite = pyglet.sprite.Sprite(img=self.laserPlatformImage, x=-self.dim.w - 0.02*self.dim.unit, y=-5.7*self.dim.unit, batch=self.batch, group=self.ordering[7])
+        self.laserCharge = pyglet.shapes.Rectangle(x=self.anchorX, y=self.anchorY, width=self.laserWidth, height=self.laserWidth/8, color=(255,0,0), batch=self.batch, group=self.ordering[6])
         
         self.laserCharge.anchor_x = int(-2.1*unit)
         self.laserCharge.anchor_y = int(self.laserCharge.height/2)

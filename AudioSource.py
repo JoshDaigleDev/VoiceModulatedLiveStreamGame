@@ -48,6 +48,10 @@ class AudioSource(threading.Thread):
         self.stream.close()
         self.audio.terminate()
 
+    def updateValues(self, high, normal, low):
+        self.highestPitch = high
+        self.normalPitch = normal
+        self.lowestPitch = low
     
     def pitchToMovement(self, pitch, decibles):
 

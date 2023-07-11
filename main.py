@@ -5,6 +5,7 @@ from AudioSource import AudioSource
 from LiveSource import LiveSource
 from Game import Game
 from GameEventDispatcher import GameEventDispatcher
+from OptionLoader import OptionLoader
 from EventHelpers import *
 from DotDict import DotDict
 
@@ -42,8 +43,10 @@ order9 = pyglet.graphics.Group(order=9)
 orderings = (order0, order1, order2, order3, order4, order5, order6, order7, order8, order9)
 rendering = (batch, orderings)
 
+OPTIONS_FILE = 'options.yaml'
+options = OptionLoader(OPTIONS_FILE)
 
-game = Game(dim, rendering)
+game = Game(dim, rendering, options)
 gameEvents = GameEventDispatcher(game)
 
 GameEventDispatcher.register_event_type('on_collision')
@@ -128,7 +131,11 @@ def on_key_press(symbol, modifiers):
     elif symbol == 115:
         fakeGift = {"user": "shooter", "gift": "moneygun", "diamonds": 199}
         game.liveManager.handleGift(fakeGift)
-    
+
+    #r
+    elif symbol == 114:
+        game.setOptions(OPTIONS_FILE)
+        audioSource.updateValues(options.highestPitch, options.normalPitch, options.lowestPitch)
     #l
     elif symbol == 108:
         fakeLike = {"user": "liker"}
