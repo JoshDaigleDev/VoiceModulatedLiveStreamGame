@@ -47,9 +47,8 @@ class LiveManager:
 
     def handleLike(self, data):
         #print(f"Live Manager: {data['user']}: LIKED")
-        totalLikes = data['totalLikes']
-        if totalLikes % 10 == 0:
-            print(f"LIKES: {self.format_integer(totalLikes)}")
+        totalLikes = self.format_integer(data['totalLikes'])
+        print(f"LIKES: {totalLikes}")
         self.currentLikes += 1
         self.totalLikes += 1
 
@@ -75,6 +74,15 @@ class LiveManager:
         if n < 1000:
             return str(n)
         elif n < 1000000:
-            return f"{n // 1000}k"
+            decimal_part = (n % 1000) // 100
+            if decimal_part > 0:
+                return f"{n // 1000}.{decimal_part}k"
+            else:
+                return f"{n // 1000}k"
         else:
-            return f"{n // 1000000}M"
+            decimal_part = (n % 1000000) // 100000
+            if decimal_part > 0:
+                return f"{n // 1000000}.{decimal_part}M"
+            else:
+                return f"{n // 1000000}M"
+
