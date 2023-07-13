@@ -26,7 +26,8 @@ class LiveSource(pyglet.event.EventDispatcher):
 
     async def on_like(self, event: LikeEvent):
         user = event.user.nickname
-        eventData = {"user": user}
+        totalLikes = event.user.total_likes
+        eventData = {"user": user, "totalLikes": totalLikes}
         self.dispatch_event('on_tiktok_like', eventData)
     
     async def on_follow(self, event: FollowEvent):

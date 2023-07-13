@@ -132,7 +132,7 @@ class Game:
  
 
     def handleGiftEvent(self, event):
-        print("Gift Event")
+        #print("Gift Event")
 
         if event.diamonds == self.CANNON_DIAMOND_AMOUNT:
             self.laserCannonManager.start_laser()
@@ -153,13 +153,13 @@ class Game:
 
 
     def handleFollowEvent(self, event):
-        print("Follow Event")
+        #print("Follow Event")
         text = f"{event.user} followed!"
         self.textManager.addTempLabel(text, 8)
 
 
     def handleLikeEvent(self, event):
-        print("Like Event")
+        #print("Like Event")
         goalPercentage = event.amount/event.goal
         difficulty = "Hard"
         textColor = (255, 255, 255, 255)
@@ -189,7 +189,7 @@ class Game:
 
     def individualLike(self):
         self.progressBarManager.likeBar.increment(1)
-        print("LIke")
+        #print("LIke")
     
     def updateLikeCycle(self):
         if not self.hardMode:

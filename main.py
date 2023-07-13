@@ -138,7 +138,7 @@ def on_key_press(symbol, modifiers):
         audioSource.updateValues(options.highestPitch, options.normalPitch, options.lowestPitch)
     #l
     elif symbol == 108:
-        fakeLike = {"user": "liker"}
+        fakeLike = {"user": "liker", "totalLikes": 100000}
         game.individualLike()
         game.liveManager.handleLike(fakeLike)
 

@@ -39,22 +39,25 @@ class LiveManager:
         user = data['user']
         gift = data['gift']
         diamonds = int(data['diamonds'])
-        print(f"Live Manager: {user} GIFTED {gift}({diamonds} Diamonds = ${diamonds*0.005})")
+        #print(f"Live Manager: {user} GIFTED {gift}({diamonds} Diamonds = ${diamonds*0.005})")
 
         if diamonds >= self.diamondThreshhold:
             event = GiftEvent(user, gift, diamonds)
             self.liveEventQueue.enqueue(event)
 
-
     def handleLike(self, data):
-        print(f"Live Manager: {data['user']}: LIKED")
+        #print(f"Live Manager: {data['user']}: LIKED")
+        totalLikes = data['totalLikes']
+        if totalLikes % 10 == 0:
+            print(f"LIKES: {self.format_integer(totalLikes)}")
         self.currentLikes += 1
         self.totalLikes += 1
 
 
     def handleFollow(self, data):
         user = data['user']
-        print(f"Live Manager: {user}: FOLLOWED")
+        
+        #print(f"Live Manager: {user}: FOLLOWED")
         event = FollowEvent(user)
         self.liveEventQueue.enqueue(event)
 
@@ -67,3 +70,11 @@ class LiveManager:
         self.likeTimer = 0
         self.currentLikes = 0
         self.likeAmount = 0
+
+    def format_integer(self, n):
+        if n < 1000:
+            return str(n)
+        elif n < 1000000:
+            return f"{n // 1000}k"
+        else:
+            return f"{n // 1000000}M"
