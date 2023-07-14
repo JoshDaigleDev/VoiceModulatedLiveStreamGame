@@ -9,14 +9,14 @@ class ProgressBarManager:
     
     def initLikeBar(self, goal):
         unit = self.dim.unit
-        maxUnits = 30
+        maxUnits = 26
         x = -12*unit
         y = -9*unit
         self.likeBar = ProgressBar(self.dim, x, y, maxUnits, goal)
     
     def initHardBar(self, duration):
         unit = self.dim.unit
-        maxUnits = 28
+        maxUnits = 26
         x = -12*unit
         y = -9*unit
         self.hardBar = ProgressBar(self.dim, x, y, maxUnits, duration, True)

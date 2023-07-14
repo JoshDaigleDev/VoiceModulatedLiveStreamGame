@@ -71,6 +71,9 @@ class TextManager():
         self.diamondEmojiCanX = -11.8*unit
         self.diamondEmojiDifX = -10.8*unit
 
+        self.likeLabelX = 15*unit
+        self.likeLabelY = -8.8*unit
+
         self.timerX = -17*unit
         self.timerY = -9*unit
     
@@ -80,9 +83,15 @@ class TextManager():
         self.difficultyLabel.draw()
         self.diamondEmojiDifficulty.draw()
         self.diamondEmojiCannon.draw()
-        for label, _ in self.tempLabels:
-            label.draw()
-    
+        self.likeLabel.draw()
+        if len(self.tempLabels) > 0:
+            for label, _ in self.tempLabels:
+                label.draw()
+        else: 
+            self.streamTitleLabel.draw()
+           
+
+        
 
     def addTempLabel(self, text, positionUnits, duration=2, color=(255,255,255,255)):
         positionY = positionUnits*self.dim.unit
@@ -102,6 +111,24 @@ class TextManager():
         self.tempLabels = [l for l in self.tempLabels if l[0] != label]
 
     def initLabels(self):
+        self.streamTitleLabel = pyglet.text.Label(
+            'Voice Controlled Challenge! Like To Help!',
+            font_name=self.eightBitFont.name,
+            font_size=60,
+            x=self.laserChargeX, 
+            y=self.tempLabelY,
+            color=(255, 255, 255, 255)#(237, 10, 187, 255)
+            )
+        
+        self.likeLabel = pyglet.text.Label(
+            '← Like!',
+            font_name=self.eightBitFont.name,
+            font_size=42,
+            x=self.likeLabelX, 
+            y=self.likeLabelY,
+            color=(255, 255, 255, 255)#(237, 10, 187, 255)
+            )
+
         self.scoreLabel = pyglet.text.Label(
             '0',
             font_name=self.eightBitFont.name,
