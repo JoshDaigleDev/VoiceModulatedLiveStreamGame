@@ -7,5 +7,5 @@ All art done by me.
 
 ## Preview:
 
-![Game Example](https://github.com/JoshDaigleDev/VoiceModulatedLiveStreamGame/tree/main/assets/DemoGif.gif)
+![Game Example](https://github.com/JoshDaigleDev/VoiceModulatedLiveStreamGame/blob/main/assets/DemoGif.gif)
 
