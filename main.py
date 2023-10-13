@@ -10,6 +10,7 @@ from EventHelpers import *
 from DotDict import DotDict
 
 #INITIALIZATION
+USERNAME = "@USERNAME"
 
 # This is a backup incase changing dimension goes terribly wrong. 
 unit = 50
@@ -57,7 +58,7 @@ moveUp = False
 moveDown = False
 paused = False
 
-USERNAME = "@ad.nah"
+
 audioSource = AudioSource()
 liveSource = LiveSource(USERNAME)
 
@@ -135,7 +136,7 @@ def on_key_press(symbol, modifiers):
     
     #s
     elif symbol == 115:
-        fakeGift = {"user": "shooter", "gift": "moneygun", "diamonds": 199}
+        fakeGift = {"user": "TheLegend27", "gift": "moneygun", "diamonds": 199}
         game.liveManager.handleGift(fakeGift)
 
     #r
