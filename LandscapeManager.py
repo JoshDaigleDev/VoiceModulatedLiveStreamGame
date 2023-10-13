@@ -9,6 +9,7 @@ class LandscapeManager:
         self.boundarySize = 3 * dim.unit
         self.init(dim)
 
+
     def update(self):
         self.firstGrass.update()
         self.secondGrass.update()
@@ -19,10 +20,12 @@ class LandscapeManager:
         self.midClouds.update()
         self.botClouds.update()
 
+
     def updateClouds(self, modifier=1):
         self.topClouds.update(modifier)
         self.midClouds.update(modifier)
         self.botClouds.update(modifier)
+
 
     def init(self, dim):
         unit, w, h = dim.getDimensions()
@@ -47,6 +50,7 @@ class LandscapeManager:
         atmosphereY = -7*unit
 
         self.atmosphere = pyglet.sprite.Sprite(img=atmosphereImage, x=atmosphereX, y=atmosphereY, batch=self.batch, group=self.ordering[0])
+
 
     def initTopClouds(self, unit, w):
         topCloudSpacing = 620

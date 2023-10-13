@@ -26,6 +26,7 @@ class Obstacle(Mover):
             ordering = rendering[1]
             self.rectangle = pyglet.shapes.Rectangle(self.x, self.y, self.width, self.height, color=(0, 0, 0), batch=batch, group=ordering[7])
 
+
     def contains(self, x, y, radius):
         x_distance = abs(x - (self.left + self.width / 2))
         y_distance = abs(y - (self.bottom + self.height / 2))
@@ -42,9 +43,6 @@ class Obstacle(Mover):
                 self.move(0, self.height/120)
             else: 
                 self.move(0, -self.height/120)
-            
-            #if self.y > self.dim.h or self.y < self.dim.w - self.dim.unit*7:
-                #self.sprite.delete()
         
         if self.boundary:
             self.rectangle.x = self.x

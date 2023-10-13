@@ -13,6 +13,7 @@ class LandscapeMoverGroup:
         self.positionY = positionY
         self.moverSpeed = -speed
 
+
     def addMover(self, moverImageSource):
         moverImage = pyglet.image.load(moverImageSource)
         moverSpacingX = len(self.movers) * self.moverWidth + 1
@@ -21,6 +22,7 @@ class LandscapeMoverGroup:
         moverSprite = pyglet.sprite.Sprite(img=moverImage, x=moverSpacingX, y=moverY, batch=self.batch, group=self.group)
         mover = Mover(moverX, moverY, moverSprite)
         self.movers.append(mover)
+    
     
     def update(self, modifier=1): 
         for mover in self.movers:

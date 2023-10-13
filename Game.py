@@ -8,8 +8,8 @@ from LiveManager import LiveManager
 from ProgressBarManager import ProgressBarManager
 from LaserHitBox import LaserHitBox
 from GameScoreManager import GameScoreManager
-
 from EventHelpers import FollowEvent, GiftEvent, LikeEvent
+
 class Game:
 
     def __init__(self, dim, rendering, options):
@@ -56,6 +56,7 @@ class Game:
         else:
             self.textManager.drawScoreLabel()
 
+
     def update(self, dt):
         self.particleSystemManager.update(dt)
         self.laserCannonManager.update(self.gameOver)
@@ -92,11 +93,13 @@ class Game:
         if isinstance(event, LikeEvent):
             self.handleLikeEvent(event)
     
+
     def setOptions(self, optionsFile):
         self.options.load_options(optionsFile)
         self.LIKE_GOAL = self.options.likeGoal
         self.progressBarManager.initLikeBar(self.LIKE_GOAL)
         self.liveManager.likeGoal = self.LIKE_GOAL
+
 
     def endGame(self):
         if not self.gameOver:
@@ -108,6 +111,7 @@ class Game:
 
     def startLaser(self):
         self.laserCannonManager.start_laser()
+
 
     def reset(self):
         self.gameOver = False
@@ -132,8 +136,6 @@ class Game:
  
 
     def handleGiftEvent(self, event):
-        #print("Gift Event")
-
         if event.diamonds == self.CANNON_DIAMOND_AMOUNT:
             self.laserCannonManager.start_laser()
             text = f"{event.user} Fired The Laser Cannon!"
@@ -151,15 +153,12 @@ class Game:
             self.textManager.addTempLabel(text, 8)
 
 
-
     def handleFollowEvent(self, event):
-        #print("Follow Event")
         text = f"{event.user} followed!"
         self.textManager.addTempLabel(text, 8)
 
 
     def handleLikeEvent(self, event):
-        #print("Like Event")
         goalPercentage = event.amount/event.goal
         difficulty = "Hard"
         textColor = (255, 255, 255, 255)
@@ -189,8 +188,8 @@ class Game:
 
     def individualLike(self):
         self.progressBarManager.likeBar.increment(1)
-        #print("LIke")
-    
+
+
     def updateLikeCycle(self):
         if not self.hardMode:
             self.likeTimer -= 1
@@ -198,6 +197,7 @@ class Game:
                 self.likeTimer = self.LIKE_DURATION
                 self.liveManager.finishCycle()
                 self.progressBarManager.resetLikes()
+
 
     def updateHardCycle(self):
         if self.hardMode:

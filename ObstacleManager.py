@@ -3,6 +3,7 @@ from Obstacle import Obstacle
 import random
 
 class ObstacleManager:
+
     def __init__(self, dim, rendering):
         self.dim = dim
         self.rendering = rendering
@@ -24,7 +25,6 @@ class ObstacleManager:
         self.bottomObstacleImageYellow = pyglet.image.load("./assets/ArrowObstacleBottomYellow.png")
 
         self.run = False
-
         self.hardmode = False
 
     
@@ -45,7 +45,6 @@ class ObstacleManager:
     
 
     def setDifficulty(self, level):
-        
         difficultyLevel = level
 
         if self.hardmode:

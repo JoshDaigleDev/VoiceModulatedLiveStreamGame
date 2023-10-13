@@ -1,5 +1,6 @@
 import time
 class LiveEventQueue:
+    
     def __init__(self, duration):
         self.duration = duration
         self.queue = []
@@ -7,8 +8,10 @@ class LiveEventQueue:
         self.eventDuration = 3
         self.isReady = False
 
+
     def enqueue(self, event):
         self.queue.append(event)
+
 
     def update(self):
         if not self.isEmpty():
@@ -29,11 +32,13 @@ class LiveEventQueue:
     
 
 class LiveEvent:
+
     def __init__(self):
         pass
         
 
 class GiftEvent(LiveEvent):
+
     def __init__(self, user, gift, diamonds):
         super().__init__()
         self.user = user
@@ -41,11 +46,13 @@ class GiftEvent(LiveEvent):
         self.diamonds = diamonds
 
 class FollowEvent(LiveEvent):
+
     def __init__(self, user):
         super().__init__()
         self.user = user
 
 class LikeEvent(LiveEvent):
+    
     def __init__(self, amount, goal):
         super().__init__()
         self.amount = amount

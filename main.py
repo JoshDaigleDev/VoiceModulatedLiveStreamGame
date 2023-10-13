@@ -78,13 +78,16 @@ def on_tiktok_like(data):
     game.individualLike()
     game.liveManager.handleLike(data)
 
+
 @liveSource.event()
 def on_tiktok_follow(data):
     game.liveManager.handleFollow(data)
 
+
 @liveSource.event()
 def on_tiktok_gift(data):
     game.liveManager.handleGift(data)
+
 
 #GAME EVENTS
 @gameEvents.event
@@ -98,9 +101,11 @@ def on_collision():
     
     game.endGame()   
 
+
 @gameEvents.event
 def on_score():
     game.increaseScore()     
+
 
 #WINDOW EVENTS
 @window.event
@@ -108,6 +113,7 @@ def on_draw():
     window.projection = projection
     window.clear()
     game.draw()
+
 
 @window.event
 def on_key_press(symbol, modifiers):
@@ -164,6 +170,7 @@ def on_key_press(symbol, modifiers):
     else:
         print(f"symbol: {symbol}")
 
+
 @window.event
 def on_key_release(symbol, modifiers):
     global moveUp
@@ -176,6 +183,7 @@ def on_key_release(symbol, modifiers):
     elif symbol == 65364:
         moveDown = False
         
+
 @window.event
 def on_close():
     audioSource.stop()
@@ -207,11 +215,11 @@ def update(dt):
             game.playerManager.movePlayer(audioSource.movement*dt, audioSource.direction)
 
 
-
 def main():
     audioSource.start()
     liveSource.start()
     pyglet.clock.schedule_interval(update, 1/60.0)
     pyglet.app.run()
+
 
 main()

@@ -1,6 +1,7 @@
 from Particle import Particle
 import pyglet
 class ParticleSystem:
+
     def __init__(self, batch, ordering, x, y, num, lifeSpan, size, image, veloctity_generation, externalForce, bounce, angle=None):
         self.batch = batch
         self.ordering = ordering
@@ -20,6 +21,7 @@ class ParticleSystem:
         self.angle = angle
         self.init()
 
+
     def init(self):
         for i in range(0, self.particleNum):
             xVelocity, yVelocity = self.velocity_generation()
@@ -36,12 +38,14 @@ class ParticleSystem:
             particle = Particle(self.originX, self.originY, self.lifeSpan, sprite, self.size, self.bounce, xVelocity, yVelocity, self.angle)
             self.particles.append(particle)
     
+
     def update(self):
         for particle in self.particles:
             particle.update()
             if particle.isDead():
                 self.particles.remove(particle)
                 particle.sprite.delete()
+    
     
     def isFinished(self):
         finished = True
@@ -50,6 +54,7 @@ class ParticleSystem:
                 finished = False
         
         return finished
+
 
 class LaserSystem:
     def __init__(self):

@@ -13,6 +13,7 @@ class TextManager():
         self.initLabels()
         self.initShapes()
 
+
     def initShapes(self):
         unit = self.dim.unit
         self.cannonBG = pyglet.shapes.Rectangle(self.laserChargeX-0.5*unit, self.laserChargeY-0.5*unit, 9*unit, 1.5*unit, color=(0,0,0,255), batch=self.batch, group=self.ordering[8])
@@ -21,6 +22,7 @@ class TextManager():
 
     def drawScoreLabel(self):
         self.scoreLabel.draw()
+
 
     def drawPlayAgain(self):
         unit = self.dim.unit
@@ -35,18 +37,21 @@ class TextManager():
         backDropSprite.draw()
         
         self.tryAgainLabel.draw()
-
         self.highScoreLabel.draw()
+
 
     def updateScore(self, score):
         self.scoreLabel.text = f"{round(score)}"
     
+
     def updateHighScore(self, score):
         self.highScoreLabel.text = f"High Score: {round(score)}"
     
+
     def updateTimer(self, time):
         self.timerLabel.text = f"{time}"
     
+
     def initCoordinates(self):
         unit, w, h = self.dim.getDimensions()
 
@@ -77,6 +82,7 @@ class TextManager():
         self.timerX = -17*unit
         self.timerY = -9*unit
     
+
     def draw(self):
         self.laserChargeLabel.draw()
         self.timerLabel.draw()
@@ -89,9 +95,7 @@ class TextManager():
                 label.draw()
         else: 
             self.streamTitleLabel.draw()
-           
-
-        
+                 
 
     def addTempLabel(self, text, positionUnits, duration=2, color=(255,255,255,255)):
         positionY = positionUnits*self.dim.unit
@@ -107,8 +111,10 @@ class TextManager():
         self.tempLabels.append((label, duration))
         pyglet.clock.schedule_once(lambda dt: self.remove_label(label), duration)
     
+
     def remove_label(self, label):
         self.tempLabels = [l for l in self.tempLabels if l[0] != label]
+
 
     def initLabels(self):
         self.streamTitleLabel = pyglet.text.Label(
@@ -117,8 +123,8 @@ class TextManager():
             font_size=60,
             x=self.laserChargeX, 
             y=self.tempLabelY,
-            color=(255, 255, 255, 255)#(237, 10, 187, 255)
-            )
+            color=(255, 255, 255, 255)
+        )
         
         self.likeLabel = pyglet.text.Label(
             '← Like!',
@@ -126,8 +132,8 @@ class TextManager():
             font_size=42,
             x=self.likeLabelX, 
             y=self.likeLabelY,
-            color=(255, 255, 255, 255)#(237, 10, 187, 255)
-            )
+            color=(255, 255, 255, 255)
+        )
 
         self.scoreLabel = pyglet.text.Label(
             '0',
@@ -135,8 +141,8 @@ class TextManager():
             font_size=172,
             x=self.scoreLabelX, 
             y=self.scoreLabelY,
-            color=(0, 0, 0, 255)#(237, 10, 187, 255)
-            )
+            color=(0, 0, 0, 255)
+        )
         
         self.highScoreLabel = pyglet.text.Label(
             'High Score: 0',
@@ -144,8 +150,8 @@ class TextManager():
             font_size=44,
             x=self.highScoreLabelX, 
             y=self.highScoreLabelY,
-            color=(0, 0, 0, 255)#(237, 10, 187, 255)
-            )
+            color=(0, 0, 0, 255)
+        )
         
         self.tryAgainLabel = pyglet.text.Label(
             'Game Over!',
@@ -153,8 +159,8 @@ class TextManager():
             font_size=64,
             x=self.tryAgainLabelX, 
             y=self.tryAgainLabelY,
-            color=(0, 0, 0, 255)#(237, 10, 187, 255)
-            )
+            color=(0, 0, 0, 255)
+        )
         
         self.laserChargeLabel = pyglet.text.Label(
             "Fire Cannon:199", 
@@ -180,7 +186,6 @@ class TextManager():
             x=self.diamondEmojiCanX,
             y=self.laserChargeY
         )
-        
         
         self.diamondEmojiDifficulty = pyglet.text.Label(
             "💎",

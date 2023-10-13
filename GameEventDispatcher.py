@@ -2,6 +2,7 @@ import pyglet
 import math
 
 class GameEventDispatcher(pyglet.event.EventDispatcher):
+    
     def __init__(self, game):
         self.obstacleManager = game.obstacleManager
         self.playerManager = game.playerManager

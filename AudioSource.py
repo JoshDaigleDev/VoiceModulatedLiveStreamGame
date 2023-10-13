@@ -4,6 +4,7 @@ import numpy as np
 import aubio
 
 class AudioSource(threading.Thread):
+
     def __init__(self):
         threading.Thread.__init__(self)
         self.daemon = True
@@ -18,8 +19,6 @@ class AudioSource(threading.Thread):
         self.pitch = 0
         self.db_level = 0
         self.aubio_pitch = aubio.pitch("default", self.chunk_size, self.chunk_size // 2, self.rate)
-
-
         self.highestPitch = 550
         self.normalPitch = 290
         self.lowestPitch = 200
@@ -28,6 +27,7 @@ class AudioSource(threading.Thread):
         self.movement = -self.speed/2
         self.direction = 1
         self.sound = False
+
 
     def run(self):
         while True:
@@ -43,18 +43,20 @@ class AudioSource(threading.Thread):
 
             self.movement, self.direction, self.sound = self.pitchToMovement(self.pitch, self.db_level)
 
+
     def stop(self):
         self.stream.stop_stream()
         self.stream.close()
         self.audio.terminate()
+
 
     def updateValues(self, high, normal, low):
         self.highestPitch = high
         self.normalPitch = normal
         self.lowestPitch = low
     
-    def pitchToMovement(self, pitch, decibles):
 
+    def pitchToMovement(self, pitch, decibles):
         movement = -self.speed/2
         direction = 1
         sound = False

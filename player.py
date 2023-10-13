@@ -2,6 +2,7 @@ import pyglet
 from Mover import Mover
 
 class Player(Mover):
+    
     def __init__(self, x, y, sprite):
         super().__init__(x, y, sprite)
         self.radius = sprite.image.width/2
@@ -9,6 +10,7 @@ class Player(Mover):
         self.dead = False
         self.currentRotation = 0
         self.rotationIncrement = 0
+
 
     def move(self, x, y, direction):
         if not self.dead:

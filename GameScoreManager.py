@@ -1,15 +1,18 @@
 import json
 
 class GameScoreManager:
+
     def __init__(self):
         self.score = 0
         self.highScore = self.getHighScore()
+
 
     def incrementScore(self, amount):
         self.score += amount
         if self.score > self.highScore:
             self.highScore = self.score
             self.updateHighScore()
+
 
     def getHighScore(self):
         try:
@@ -20,6 +23,7 @@ class GameScoreManager:
             print("NOT FOUND")
             return 0
 
+
     def updateHighScore(self):
         try:
             with open("./HighScore.json", "w") as file:
@@ -27,6 +31,7 @@ class GameScoreManager:
                 json.dump(data, file)
         except IOError:
             print("Error: Failed to update high score.")
+    
     
     def reset(self):
         self.score = 0

@@ -20,7 +20,7 @@ class ProgressBar:
         if self.hard:
             self.bar.scale_x = -1
 
-    
+
     def increment(self, amount):
         if not self.hard:
             self.progress += amount
@@ -40,6 +40,7 @@ class ProgressBar:
             
             self.bar.color = self.color
     
+
     def setAmount(self, amount):
         self.progress = amount
         

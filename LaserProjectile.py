@@ -22,6 +22,7 @@ class LaserProjectile():
         self.rect = pyglet.shapes.Rectangle(self.x, self.laserY, self.width, self.scaler, color=(self.colorOpacity, 0, self.color2, self.colorOpacity), batch=self.batch, group=self.group)
         self.rect.rotation = self.angle
         
+        
     def update(self):
         self.rect.rotation = self.angle
         self.cycle += math.pi/20

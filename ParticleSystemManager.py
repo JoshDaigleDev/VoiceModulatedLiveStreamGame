@@ -21,6 +21,7 @@ class ParticleSystemManager:
         self.currentRotation = 0 
         self.lasers = LaserSystem()
         
+        
     def update(self, dt):
         for particleSystem in self.particleSystems:
             particleSystem.update()
@@ -42,6 +43,7 @@ class ParticleSystemManager:
         
         self.doParticlePhysics(dt)
 
+
     def loadAssets(self):
         self.playerTrailImg = pyglet.image.load('./assets/MusicNote.png')
         self.playerTrailImg.anchor_x = self.playerTrailImg.width // 2
@@ -49,6 +51,7 @@ class ParticleSystemManager:
         self.SheetMusic = pyglet.image.load('./assets/SheetMusicClearThin.png')
         self.SheetMusic.anchor_y = self.SheetMusic.height // 2 
     
+
     def initPlayerExplosion(self, image):
         self.stop = True
         imageSeq = pyglet.image.ImageGrid(image, 12, 12)
@@ -57,10 +60,12 @@ class ParticleSystemManager:
         for system in self.particleSystems:
             if system.bounce:
                 system.external_force = self.standardGravity
-    
+
+
     def initPlayerTrailNote(self):
         playerTrailNoteSystem = ParticleSystem(self.batch, self.ordering[9], self.player.x, self.player.y, 1, 180, 25, self.playerTrailImg, self.playerTrailNoteInitialVelocity, False, True)
         self.particleSystems.append(playerTrailNoteSystem)
+
 
     def initPlayerTrailSheet(self):
         if self.currentRotation < self.player.currentRotation:
@@ -68,23 +73,26 @@ class ParticleSystemManager:
         elif self.currentRotation > self.player.currentRotation:
             self.currentRotation -= 2
         playerTrailSheetSystem = ParticleSystem(self.batch, self.ordering[8], self.player.x, self.player.y, 1, 180, 10, self.SheetMusic, self.playerTrailSheetInitialVelocity, False, False, angle=self.currentRotation)
-        #print(self.player.currentRotation)
         self.particleSystems.append(playerTrailSheetSystem)
+
 
     def playerExplosionInitialVelocity(self):
         xVelocity = random.randint(-50, 50)
         yVelocity = random.randint(-50, 50)
 
         return xVelocity, yVelocity
-    
+
+
     def fire_laser(self, laser):
         self.lasers.add(laser)
     
+
     def playerTrailNoteInitialVelocity(self):
         xVelocity = -1 - random.random() / 5
         yVelocity = random.random() / 2
         
         return xVelocity, yVelocity
+
 
     def playerTrailSheetInitialVelocity(self):
         xVelocity = -1
@@ -92,24 +100,29 @@ class ParticleSystemManager:
         
         return xVelocity, yVelocity
 
+
     def standardGravity(self, x, y):
         xNew = x
         yNew = y - 1.5
 
         return xNew, yNew
     
+
     def noChange(self, x, y):
         xNew = x
         yNew = y 
             
         return xNew, yNew
 
+
     def reset(self):
         self.stop = False
         self.particleSystems = []
 
+
     def activeLaser(self):
         return len(self.lasers.lasers) > 0
+
 
     def doParticlePhysics(self, dt):
             damping_factor = 0.8 

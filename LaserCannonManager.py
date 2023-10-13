@@ -23,6 +23,7 @@ class LaserCannonManager:
         self.load_assets()
         self.init_sprites()
 
+
     def update(self, gameOver):
         if self.charging:
             self.chargeTime += 1
@@ -72,11 +73,13 @@ class LaserCannonManager:
         diffX = self.playerManager.player.x - self.laserBarrelSprite.x
         diffY = self.playerManager.player.y - self.laserBarrelSprite.y
         return -math.degrees(math.atan2(diffY, diffX))
+    
 
     def getAngleToTarget(self, targetX, targetY):
         diffX = targetX - self.laserBarrelSprite.x
         diffY = targetY - self.laserBarrelSprite.y
         return -math.degrees(math.atan2(diffY, diffX))
+
 
     def load_assets(self):
         unit, w, h = self.dim.getDimensions()
@@ -98,6 +101,7 @@ class LaserCannonManager:
         self.mediaPlayer = pyglet.media.Player()
         self.laserFireAudio = pyglet.media.load('./Assets/LaserShoot.mp3')
         self.laserChargeAudio = pyglet.media.load('./Assets/LaserCharge.mp3')
+
 
     def init_sprites(self):
         unit, w, h = self.dim.getDimensions()
@@ -121,6 +125,7 @@ class LaserCannonManager:
         if self.mediaPlayer.playing:
             self.mediaPlayer.next_source()
         self.mediaPlayer.play()
+  
     
     def trim_sound(self):
         if self.mediaPlayer.time >= 2:

@@ -2,6 +2,7 @@ import pyglet
 from Player import Player
 
 class PlayerManager:
+    
     def __init__(self, dim, rendering):
         self.dim = dim
         self.batch = rendering[0]
@@ -29,6 +30,7 @@ class PlayerManager:
         self.player.reset(self.ORIGIN_X, self.ORIGIN_Y)
         self.player.sprite = playerSprite
     
+
     def destruct(self):
         self.player.dead = True
         self.player.sprite.delete()
