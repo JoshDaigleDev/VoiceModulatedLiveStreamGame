@@ -6,5 +6,6 @@ This is a project I made for someone who streams themselves singing on TikTok li
 All art done by me. 
 
 ## Preview:
-![Game Example](https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHV0a215ZjIyam1kMzIzZ2RmeXFqcnlxcTBibDUyenlodWx2aHh4cyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cKPjHoJWMUF7WVpoJe/giphy.gif)
+
+![Game Example](https://github.com/JoshDaigleDev/VoiceModulatedLiveStreamGame/tree/main/assets/DemoGif.gif)
 
